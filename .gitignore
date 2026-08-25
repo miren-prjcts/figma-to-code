@@ -1,0 +1,12 @@
+node_modules/
+.pnpm-store/
+dist/
+storybook-static/
+.turbo/
+.next/
+next-env.d.ts
+out/
+test-results/
+*.tsbuildinfo
+.DS_Store
+*.log

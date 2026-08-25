@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* Where Tailwind looks for classes (monorepo): design-system components and stories. */
+@source "../../../packages/ui/src";
+@source "../stories";
+
+/* Maps semantic tokens (from @repo/tokens) into the Tailwind theme.
+   "inline" = use these CSS variables directly (they resolve in the browser).
+   Raw --gray-* values are deliberately not mapped — components use semantics only. */
+@theme inline {
+  /* Surfaces */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Actions */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  /* Statuses (soft: surface = tinted background, foreground = text) */
+  --color-success-surface: var(--success-surface);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning-surface: var(--warning-surface);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive-surface: var(--destructive-surface);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-info-surface: var(--info-surface);
+  --color-info-foreground: var(--info-foreground);
+
+  /* Geist variable fonts are provided by @fontsource and imported in preview.tsx.
+     Breakpoints are NOT overridden: Tailwind 4 defaults (sm40/md48/lg64/xl80/2xl96rem)
+     already match our grid. */
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+
+  /* One radius token controls the entire design system: rounded-md (Button) and rounded-lg (Card/Modal). */
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+
+  /* Soft surface shadow — the shadow-soft class; its value comes from a token (changes in light/dark mode). */
+  --shadow-soft: var(--shadow-soft);
+}
