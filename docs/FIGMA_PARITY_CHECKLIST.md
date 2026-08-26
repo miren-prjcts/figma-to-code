@@ -67,16 +67,22 @@ Figma work never starts before this order is satisfied, and it never runs in par
       updated with the verified outcome once the work lands, per
       `COMPONENT_LIFECYCLE.md` §6 and §9.
 
-## Known current gap (as of this ticket)
+## Resolved gap: typography variable binding (`DSV2-004`)
 
-Figma's typography text styles are not yet bound to number Variables for size/line-height — a live
-`get_variable_defs` check on a sampled text node returned only the color-fill binding, confirmed in
-`DSV2-004`'s scope. Binding the typography scale (`--font-size-*` / `--line-height-*` pairs from
-`packages/tokens/src/tokens.css`) as Figma number Variables and rebinding the corresponding text
-styles is `DSV2-004`'s explicit scope, not yet executed as of this writing. Treat this as the
-current known Figma-API-related gap for typography parity — not as a blocking defect requiring
-repair outside that ticket, and not as evidence that any _component-set_ structural issue is still
-open (that one was resolved via `DSV1-006`; see `ISSUES.md`).
+Figma's 9 typography text styles were previously not bound to number Variables for size/line-height
+— a live `get_variable_defs` check on a sampled text node returned only the color-fill binding. This
+is resolved: `DSV2-004` bound all 9 text styles' `fontSize`/`lineHeight` to the pre-existing
+`Typography` collection's `size/*`/`line-height/*` FLOAT variables (which already carried correct
+`codeSyntax.WEB` values matching `packages/tokens/src/tokens.css` — only the binding itself was
+missing), and added the 10 `DSV2-001`/`DSV2-002` interaction/foundation variables that had no Figma
+representation yet. See [`figma-tokens.md` §5–6](./figma-tokens.md#5--type--breakpoints) for the
+verified value tables. No _component-set_ structural issue is open (that one was resolved via
+`DSV1-006`; see `ISSUES.md`).
+
+**Verification-tooling note found during this work:** `get_variable_defs` does not surface
+variables bound at the text-style level, only variables bound directly on a node's own properties.
+Do not use it alone to declare typography parity resolved or unresolved — cross-check
+`TextStyle.boundVariables` via `use_figma` first.
 
 ## See also
 

@@ -49,41 +49,71 @@ Palette: pure-neutral, `primary` inverts off-black ↔ off-white between modes, 
 
 ## 4 · Mapping into Figma Variables
 
-- **Collection «Primitives»** — single mode. Only `gray-50…950`.
-- **Collection «Semantic»** — **two modes: Light + Dark**. Neutrals are **aliases** to `Primitives/gray-*` (semantic references primitives). Status surface/text are direct hex per mode (table above).
-- **Scopes** (don't leave `ALL_SCOPES`): fills (`background / card / *-surface`) → `FRAME_FILL, SHAPE_FILL`; text (`foreground / *-foreground`) → `TEXT_FILL`; `border / input / ring` → `STROKE_COLOR`; `radius` → `CORNER_RADIUS`.
-- Create real **Variables** (not color styles), with **two modes**.
+The Figma file (`jiDhe0OZzNgiDbc3Z9Hh5n`) uses seven collections, verified live via the Plugin API
+as of `DSV2-004`:
+
+| Collection           | Modes       | Contents                                                                                                  |
+| -------------------- | ----------- | --------------------------------------------------------------------------------------------------------- |
+| **Color Primitives** | Value       | `gray-50…950`, `white`, and the `green/amber/red/blue` status primitives. Scopes hidden (`[]`).           |
+| **Color**            | Light, Dark | All semantic surface/action/status/state roles, aliased to Color Primitives.                              |
+| **Spacing**          | Value       | `spacing-base`, `space-0…16`.                                                                             |
+| **Size**             | Value       | Control, icon, dialog, and minimum-target sizes.                                                          |
+| **Radius**           | Value       | `radius-control`, `radius-surface`.                                                                       |
+| **Typography**       | Value       | Font family/weight/size/line-height — see §5.                                                             |
+| **Foundation**       | Value       | Non-color, non-typography scales with no closer-fitting collection (`opacity-disabled`, `layer-overlay`). |
+
+- **Scopes** (never left as `ALL_SCOPES`): fills (`background / card / *-surface`) →
+  `FRAME_FILL, SHAPE_FILL`; text (`foreground / *-foreground`) → `TEXT_FILL`; `border / input /
+ring / invalid-*` → `STROKE_COLOR`; radius → `CORNER_RADIUS`; icon/dialog/target sizes →
+  `WIDTH_HEIGHT`; `opacity-disabled` → `OPACITY`; `layer-overlay` → `[]` (no Figma node property
+  represents stacking order, so nothing can bind to it — kept as a hidden, reference-only value for
+  code-parity documentation, per `DSV2-004`'s verified finding).
+- Every variable carries `codeSyntax.WEB` set to the exact `var(--token-name)` string from
+  `packages/tokens/src/tokens.css` — this is what keeps the tables below traceable to code rather
+  than restated by hand.
 
 ## 5 · Type & breakpoints
 
-- Fonts: **Geist** (sans) + **Geist Mono**. In code via `@fontsource-variable/geist` (families `Geist Variable` / `Geist Mono Variable`). In Figma: text styles on Geist.
+- Fonts: **Geist** (sans) + **Geist Mono**. In code via `@fontsource-variable/geist` (families
+  `Geist Variable` / `Geist Mono Variable`). In Figma: 9 text styles (`Label / XS` through
+  `Code / SM`) on Geist / Geist Mono.
 - Breakpoints = Tailwind 4 defaults: `sm 640 · md 768 · lg 1024 · xl 1280 · 2xl 1536`.
-- Text styles currently bind only their color-fill to a Figma variable; `--font-size-*` /
-  `--line-height-*` are not yet bound as Figma number Variables (confirmed via a live
-  `get_variable_defs` check on a sampled text node). Binding them is `DSV2-004` scope, not yet
-  executed — see [`FIGMA_PARITY_CHECKLIST.md`](./FIGMA_PARITY_CHECKLIST.md#known-current-gap-as-of-this-ticket).
+- **Typography is fully variable-bound as of `DSV2-004`.** All 9 text styles have `fontSize` and
+  `lineHeight` bound to the `Typography` collection's `size/*` and `line-height/*` FLOAT variables
+  (verified via a fresh `getLocalTextStylesAsync()` read showing every style's `boundVariables`
+  populated, in a separate `use_figma` call from the one that set them — not just the immediate
+  write-call return value). One verification nuance found during this work: the official
+  `get_variable_defs` design-context tool does **not** surface variables bound at the text-style
+  level (only variables bound directly on a node's own properties) — it returned `{}` for a node
+  using a fully-bound style. Treat `get_variable_defs` as authoritative only for direct node
+  bindings; for style-level bindings, read `TextStyle.boundVariables` via the Plugin API instead.
 
-## 6 · DSV2-001 interaction/foundation additions (code-integrated, Figma parity pending)
+## 6 · DSV2-001/002 interaction and foundation additions (code-integrated, Figma parity complete)
 
 `DSV2-001` added semantic state roles and cross-product foundation scales to
-`packages/tokens/src/tokens.css`. These are **integrated in code**; mapping them into Figma
-Variables is `DSV2-004` scope and has not run yet as of this writing — do not assume the collections
-below already exist in the Figma file without verifying through the Plugin API first.
+`packages/tokens/src/tokens.css`; `DSV2-002` wired the first real consumers. All values below are
+**verified live in Figma** as of `DSV2-004` (collection/scope/value re-read fresh after mutation,
+not assumed from the write call).
 
-| Token                | Light              | Dark               | Consumer(s)                                                                     |
-| -------------------- | ------------------ | ------------------ | ------------------------------------------------------------------------------- |
-| `--primary-hover`    | `gray-800`         | `gray-200`         | Button (solid variant, hover)                                                   |
-| `--primary-pressed`  | `gray-700`         | `gray-300`         | Button (solid variant, active/pressed)                                          |
-| `--invalid-border`   | `red-700`          | `red-400`          | Input (`aria-invalid` border)                                                   |
-| `--invalid-ring`     | `red-700`          | `red-400`          | Input (`aria-invalid` focus ring)                                               |
-| `--opacity-disabled` | `0.5`              | `0.5`              | Button, Input (disabled)                                                        |
-| `--layer-overlay`    | `50`               | `50`               | Modal (stacking context)                                                        |
-| `--size-icon-sm`     | `1rem`             | `1rem`             | Modal close icon, Modal loading spinner                                         |
-| `--size-icon-md`     | `1.25rem`          | `1.25rem`          | StatCard overflow-action icon                                                   |
-| `--size-target-min`  | `2.75rem`          | `2.75rem`          | Approved near-term: StatCard action (`DSV2-002`) — no component consumes it yet |
-| `--size-dialog-sm`   | `26.25rem` (420px) | `26.25rem` (420px) | Modal surface max width                                                         |
+| Token                | Light              | Dark               | Figma location               | Consumer(s)                                       |
+| -------------------- | ------------------ | ------------------ | ---------------------------- | ------------------------------------------------- |
+| `--primary-hover`    | `gray-800`         | `gray-200`         | `Color / primary-hover`      | Button (solid variant, hover)                     |
+| `--primary-pressed`  | `gray-700`         | `gray-300`         | `Color / primary-pressed`    | Button (solid variant, active/pressed)            |
+| `--invalid-border`   | `red-700`          | `red-400`          | `Color / invalid-border`     | Input (`aria-invalid` border)                     |
+| `--invalid-ring`     | `red-700`          | `red-400`          | `Color / invalid-ring`       | Input (`aria-invalid` focus ring)                 |
+| `--opacity-disabled` | `0.5`              | `0.5`              | `Foundation / disabled`      | Button, Input, StatCard action (all disabled)     |
+| `--layer-overlay`    | `50`               | `50`               | `Foundation / layer/overlay` | Modal (stacking context) — reference-only, see §4 |
+| `--size-icon-sm`     | `1rem` (16px)      | `1rem` (16px)      | `Size / icon/sm`             | Modal close icon, Modal loading spinner           |
+| `--size-icon-md`     | `1.25rem` (20px)   | `1.25rem` (20px)   | `Size / icon/md`             | StatCard overflow-action icon                     |
+| `--size-target-min`  | `2.75rem` (44px)   | `2.75rem` (44px)   | `Size / target/min`          | StatCard overflow-action hit area (`DSV2-002`)    |
+| `--size-dialog-sm`   | `26.25rem` (420px) | `26.25rem` (420px) | `Size / dialog/sm`           | Modal surface max width                           |
 
-A `selected` state role was scoped as a candidate in `DSV2-001` but was deliberately not added —
-no component has a current selected-state need. See
+These 10 variables exist in Figma but are **not yet applied to the component sets themselves** —
+`DSV2-004`'s scope is limited to the token/variable layer and explicitly excludes changing component
+sets (that remains `DSV1-006`'s staged-replacement flow, reused for any future component-set
+update). A component-set update to consume these variables is a separate, not-yet-scoped decision.
+
+A `selected` state role was scoped as a candidate in `DSV2-001` but was deliberately not added — no
+component has a current selected-state need. See
 [`DESIGN_SYSTEM_CHARTER.md`](./DESIGN_SYSTEM_CHARTER.md#5--state-model) for the full state-model
 rationale.
