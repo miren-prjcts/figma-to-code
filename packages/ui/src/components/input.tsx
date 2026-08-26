@@ -1,51 +1,81 @@
-"use client";
-
 import * as React from "react";
-import { MagnifyingGlass } from "@phosphor-icons/react";
 import { cn } from "../lib/utils";
 
-/**
- * Input (search) — a 1:1 match with the Figma “Input” component.
- *
- * The wrapper provides the border/focus ring (focus-within); <input> is transparent.
- * Colors come ONLY from semantic tokens: border-input, bg-background, ring-ring,
- * text-foreground, placeholder:text-muted-foreground. No hex values.
- *
- * The icon is Phosphor MagnifyingGlass (the same official library used in Figma),
- * decorative (aria-hidden); the <input> itself carries the accessible name through aria-label.
- */
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  /** Override class for the wrapper (for example, width: "w-[280px]"). */
+  /** Class name for the outer layout container. */
   containerClassName?: string;
+  /** Decorative content rendered at the start of the input. */
+  leadingAdornment?: React.ReactNode;
+  /** Decorative content rendered at the end of the input. */
+  trailingAdornment?: React.ReactNode;
 }
 
-export function Input({
-  className,
-  containerClassName,
-  type = "text",
-  "aria-label": ariaLabel = "Search",
-  disabled,
-  ...props
-}: InputProps): React.ReactElement {
+function isAriaInvalid(value: React.AriaAttributes["aria-invalid"]): boolean {
+  return value !== undefined && value !== false && value !== "false";
+}
+
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input(
+  {
+    "aria-invalid": ariaInvalid,
+    className,
+    containerClassName,
+    disabled,
+    leadingAdornment,
+    readOnly,
+    trailingAdornment,
+    type = "text",
+    ...props
+  },
+  ref,
+): React.ReactElement {
+  const invalid = isAriaInvalid(ariaInvalid);
+
   return (
     <div
-      className={cn(
-        "inline-flex h-[var(--size-control-md)] items-center gap-2 rounded-md border border-input bg-background px-3 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
-        disabled && "cursor-not-allowed opacity-50",
-        containerClassName,
-      )}
+      data-slot="input-container"
+      data-disabled={disabled ? "true" : undefined}
+      data-invalid={invalid ? "true" : undefined}
+      data-readonly={readOnly ? "true" : undefined}
+      className={cn("relative inline-flex items-center", containerClassName)}
     >
-      <MagnifyingGlass size={16} className="shrink-0 text-muted-foreground" aria-hidden />
+      {leadingAdornment ? (
+        <span
+          data-slot="input-leading-adornment"
+          className={cn(
+            "pointer-events-none absolute top-1/2 left-3 z-10 flex shrink-0 -translate-y-1/2 text-muted-foreground",
+            disabled && "opacity-50",
+          )}
+          aria-hidden="true"
+        >
+          {leadingAdornment}
+        </span>
+      ) : null}
       <input
+        ref={ref}
         type={type}
-        aria-label={ariaLabel}
+        aria-invalid={ariaInvalid}
         disabled={disabled}
+        readOnly={readOnly}
         className={cn(
-          "w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none",
+          "h-[var(--size-control-md)] w-full rounded-md border border-input bg-background px-3 text-sm text-foreground transition-[color,background-color,border-color,box-shadow,opacity] placeholder:text-muted-foreground read-only:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-50 aria-invalid:border-destructive-foreground aria-invalid:focus-visible:ring-destructive-foreground",
+          leadingAdornment && "pl-9",
+          trailingAdornment && "pr-9",
           className,
         )}
         {...props}
       />
+      {trailingAdornment ? (
+        <span
+          data-slot="input-trailing-adornment"
+          className={cn(
+            "pointer-events-none absolute top-1/2 right-3 z-10 flex shrink-0 -translate-y-1/2 text-muted-foreground",
+            disabled && "opacity-50",
+          )}
+          aria-hidden="true"
+        >
+          {trailingAdornment}
+        </span>
+      ) : null}
     </div>
   );
-}
+});
