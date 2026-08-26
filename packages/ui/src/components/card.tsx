@@ -31,7 +31,7 @@ export function StatCard({
 }: StatCardProps): React.ReactElement {
   return (
     <div
-      className={cn("border-border bg-card relative rounded-lg border p-5", className)}
+      className={cn("relative rounded-lg border border-border bg-card p-5", className)}
       {...props}
     >
       {action ? (
@@ -40,14 +40,14 @@ export function StatCard({
           aria-label={action.label}
           disabled={action.disabled}
           onClick={action.onClick}
-          className="text-muted-foreground hover:text-card-foreground focus-visible:ring-ring focus-visible:ring-offset-card absolute top-4 right-4 cursor-pointer border-0 bg-transparent p-0 leading-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className="absolute top-4 right-4 cursor-pointer border-0 bg-transparent p-0 leading-none text-muted-foreground hover:text-card-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <DotsThreeVertical size={20} aria-hidden />
+          <DotsThreeVertical className="size-[var(--size-icon-md)]" aria-hidden />
         </button>
       ) : null}
       <dl>
-        <dt className="text-muted-foreground text-sm">{title}</dt>
-        <dd className="text-card-foreground m-0 text-2xl font-semibold">{value}</dd>
+        <dt className="text-sm text-muted-foreground">{title}</dt>
+        <dd className="m-0 text-2xl font-semibold text-card-foreground">{value}</dd>
       </dl>
     </div>
   );

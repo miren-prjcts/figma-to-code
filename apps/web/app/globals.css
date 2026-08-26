@@ -16,6 +16,8 @@
   --color-ring: var(--ring);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-pressed: var(--primary-pressed);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-success-surface: var(--success-surface);
@@ -26,6 +28,8 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-info-surface: var(--info-surface);
   --color-info-foreground: var(--info-foreground);
+  --color-invalid-border: var(--invalid-border);
+  --color-invalid-ring: var(--invalid-ring);
   --font-sans: var(--font-family-sans);
   --font-mono: var(--font-family-mono);
   --font-weight-normal: var(--font-weight-body-regular);

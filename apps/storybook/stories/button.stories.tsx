@@ -79,8 +79,8 @@ function getForcedStateClass(
   state: string,
   variant: (typeof VARIANTS)[number],
 ): string | undefined {
-  if (state === "Hover") return variant === "solid" ? "opacity-90" : "bg-muted";
-  if (state === "Pressed") return variant === "solid" ? "opacity-80" : "bg-secondary";
+  if (state === "Hover") return variant === "solid" ? "bg-primary-hover" : "bg-muted";
+  if (state === "Pressed") return variant === "solid" ? "bg-primary-pressed" : "bg-secondary";
   if (state === "Focus visible") {
     return "ring-2 ring-ring ring-offset-2 ring-offset-background";
   }

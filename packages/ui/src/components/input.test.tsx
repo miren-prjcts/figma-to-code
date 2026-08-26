@@ -34,7 +34,7 @@ describe("Input", () => {
     const input = screen.getByRole("textbox", { name: "Project" });
     expect(input).toHaveValue("Atlas");
     expect(input).toBeDisabled();
-    expect(input).toHaveClass("disabled:bg-muted", "disabled:opacity-50");
+    expect(input).toHaveClass("disabled:bg-muted", "disabled:opacity-[var(--opacity-disabled)]");
     expect(input.parentElement).toHaveAttribute("data-disabled", "true");
   });
 
@@ -57,8 +57,8 @@ describe("Input", () => {
     const input = screen.getByRole("textbox", { name: "Project" });
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input).toHaveClass(
-      "aria-invalid:border-destructive-foreground",
-      "aria-invalid:focus-visible:ring-destructive-foreground",
+      "aria-invalid:border-invalid-border",
+      "aria-invalid:focus-visible:ring-invalid-ring",
     );
     expect(input.parentElement).toHaveAttribute("data-invalid", "true");
   });

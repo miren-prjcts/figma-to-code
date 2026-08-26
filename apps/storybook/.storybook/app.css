@@ -6,7 +6,8 @@
 
 /* Maps semantic tokens (from @repo/tokens) into the Tailwind theme.
    "inline" = use these CSS variables directly (they resolve in the browser).
-   Raw --gray-* values are deliberately not mapped — components use semantics only. */
+   Raw --gray-* values are deliberately not mapped — components use semantics only.
+   This block must stay equivalent to apps/web/app/globals.css's @theme block. */
 @theme inline {
   /* Surfaces */
   --color-background: var(--background);
@@ -22,6 +23,8 @@
   /* Actions */
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-pressed: var(--primary-pressed);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
 
@@ -34,17 +37,35 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-info-surface: var(--info-surface);
   --color-info-foreground: var(--info-foreground);
+  --color-invalid-border: var(--invalid-border);
+  --color-invalid-ring: var(--invalid-ring);
 
-  /* Geist variable fonts are provided by @fontsource and imported in preview.tsx.
-     Breakpoints are NOT overridden: Tailwind 4 defaults (sm40/md48/lg64/xl80/2xl96rem)
-     already match our grid. */
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  /* Geist variable fonts are provided by @fontsource and imported in preview.tsx. */
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
+  --font-weight-normal: var(--font-weight-body-regular);
+  --font-weight-medium: var(--font-weight-body-medium);
+  --font-weight-semibold: var(--font-weight-body-semibold);
+  --text-xs: var(--font-size-label-xs);
+  --text-xs--line-height: var(--line-height-label-xs);
+  --text-sm: var(--font-size-body-sm);
+  --text-sm--line-height: var(--line-height-body-sm);
+  --text-base: var(--font-size-body-md);
+  --text-base--line-height: var(--line-height-body-md);
+  --text-lg: var(--font-size-body-lg);
+  --text-lg--line-height: var(--line-height-body-lg);
+  --text-2xl: var(--font-size-heading-lg);
+  --text-2xl--line-height: var(--line-height-heading-lg);
+  --text-4xl: var(--font-size-display-sm);
+  --text-4xl--line-height: var(--line-height-display-sm);
+  --text-5xl: var(--font-size-display-lg);
+  --text-5xl--line-height: var(--line-height-display-lg);
+  --spacing: var(--spacing-base);
 
-  /* One radius token controls the entire design system: rounded-md (Button) and rounded-lg (Card/Modal). */
-  --radius-md: var(--radius);
-  --radius-lg: var(--radius);
+  /* Named radius tokens (rounded-md = Button, rounded-lg = Card/Modal) — matches web. */
+  --radius-md: var(--radius-control);
+  --radius-lg: var(--radius-surface);
 
-  /* Soft surface shadow — the shadow-soft class; its value comes from a token (changes in light/dark mode). */
-  --shadow-soft: var(--shadow-soft);
+  /* Soft surface shadow — resolves to the shadow token, not to itself. */
+  --shadow-soft: var(--effect-shadow-soft);
 }

@@ -38,11 +38,24 @@ const SURFACES = [
   "ring",
   "primary",
   "primary-foreground",
+  "primary-hover",
+  "primary-pressed",
   "secondary",
   "secondary-foreground",
+  "invalid-border",
+  "invalid-ring",
 ];
 
 const STATUSES = ["success", "warning", "destructive", "info"] as const;
+
+/** Theme-invariant foundation scales — same value in Light and Dark. */
+const FOUNDATION_SCALES: Array<[string, string]> = [
+  ["--opacity-disabled", "Button/Input disabled state"],
+  ["--layer-overlay", "Modal stacking context"],
+  ["--size-icon-sm", "Modal close icon, loading spinner"],
+  ["--size-icon-md", "StatCard overflow-action icon"],
+  ["--size-dialog-sm", "Modal surface max width"],
+];
 const STATUS_LABEL: Record<(typeof STATUSES)[number], string> = {
   success: "In stock",
   warning: "Low stock",
@@ -203,6 +216,67 @@ export const Overview: Story = {
           >
             --radius
           </code>
+        </div>
+      </section>
+
+      <section>
+        <SectionTitle>Elevation (light / dark)</SectionTitle>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div
+            style={{
+              width: 96,
+              height: 56,
+              background: "var(--card)",
+              borderRadius: "var(--radius-surface)",
+              boxShadow: "var(--effect-shadow-soft)",
+            }}
+          />
+          <code
+            style={{
+              font: "400 12px/16px var(--font-mono, monospace)",
+              color: "var(--muted-foreground)",
+            }}
+          >
+            --effect-shadow-soft (Tailwind: shadow-soft)
+          </code>
+        </div>
+      </section>
+
+      <section>
+        <SectionTitle>Foundation scales (theme-invariant)</SectionTitle>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {FOUNDATION_SCALES.map(([name, consumer]) => (
+            <div key={name} style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div
+                aria-hidden
+                style={{
+                  width: `var(${name})`.startsWith("var(--size") ? `var(${name})` : 24,
+                  height: `var(${name})`.startsWith("var(--size") ? `var(${name})` : 24,
+                  background: "var(--muted)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 4,
+                  opacity: name === "--opacity-disabled" ? `var(${name})` : undefined,
+                  flexShrink: 0,
+                }}
+              />
+              <code
+                style={{
+                  font: "400 12px/16px var(--font-mono, monospace)",
+                  color: "var(--foreground)",
+                }}
+              >
+                {name}
+              </code>
+              <span
+                style={{
+                  font: "400 12px/16px var(--font-sans, sans-serif)",
+                  color: "var(--muted-foreground)",
+                }}
+              >
+                {consumer}
+              </span>
+            </div>
+          ))}
         </div>
       </section>
 

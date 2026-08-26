@@ -101,11 +101,21 @@
 
   --primary: var(--gray-950); /* off-black */
   --primary-foreground: var(--gray-50); /* off-white */
+  --primary-hover: var(--gray-800); /* Button solid :hover */
+  --primary-pressed: var(--gray-700); /* Button solid :active */
   --secondary: var(--gray-100);
   --secondary-foreground: var(--gray-900);
 
   --radius: var(--radius-control); /* legacy alias — use named radius tokens above */
   --effect-shadow-soft: 0 8px 24px -4px rgb(0 0 0 / 0.12); /* soft surface shadow */
+
+  /* ── Interaction/foundation scales (theme-invariant) ─────────────────────
+     Only roles with a present component consumer, per DSV2-001 scope. */
+  --opacity-disabled: 0.5; /* Button, Input disabled state */
+  --layer-overlay: 50; /* Modal stacking context */
+  --size-icon-sm: 1rem; /* Modal close icon, Modal loading spinner */
+  --size-icon-md: 1.25rem; /* StatCard overflow-action icon */
+  --size-dialog-sm: 26.25rem; /* Modal surface max width (420px at 16px root) */
 
   /* ── Statuses · soft (tinted background + saturated text), LIGHT ────────── */
   --success-surface: var(--green-50);
@@ -116,6 +126,11 @@
   --destructive-foreground: var(--red-700);
   --info-surface: var(--blue-50);
   --info-foreground: var(--blue-700);
+
+  /* ── Invalid state · dedicated border/ring roles (replaces reusing
+     --destructive-foreground, a text role, as a stroke role), LIGHT ──────── */
+  --invalid-border: var(--red-700);
+  --invalid-ring: var(--red-700);
 }
 
 .dark {
@@ -133,6 +148,8 @@
 
   --primary: var(--gray-50); /* off-white — inverted for dark mode */
   --primary-foreground: var(--gray-950); /* off-black */
+  --primary-hover: var(--gray-200);
+  --primary-pressed: var(--gray-300);
   --secondary: var(--gray-800);
   --secondary-foreground: var(--gray-50);
 
@@ -147,4 +164,7 @@
   --destructive-foreground: var(--red-400);
   --info-surface: var(--blue-950);
   --info-foreground: var(--blue-400);
+
+  --invalid-border: var(--red-400);
+  --invalid-ring: var(--red-400);
 }

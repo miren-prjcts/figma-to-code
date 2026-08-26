@@ -29,8 +29,8 @@ describe("Button", () => {
     render(<Button>Action</Button>);
 
     expect(screen.getByRole("button", { name: "Action" })).toHaveClass(
-      "hover:opacity-90",
-      "active:opacity-80",
+      "hover:bg-primary-hover",
+      "active:bg-primary-pressed",
       "focus-visible:ring-2",
       "focus-visible:ring-ring",
     );

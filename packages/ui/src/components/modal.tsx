@@ -109,8 +109,7 @@ function ModalActionButton({ action, variant }: ModalActionButtonProps): React.R
       {isLoading ? (
         <>
           <CircleNotch
-            className="mr-2 animate-spin motion-reduce:animate-none"
-            size={16}
+            className="mr-2 size-[var(--size-icon-sm)] animate-spin motion-reduce:animate-none"
             aria-hidden
           />
           {action.loadingLabel ?? `${action.label}…`}
@@ -233,7 +232,7 @@ export function Modal({
   return createPortal(
     <div
       role="presentation"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4"
+      className="fixed inset-0 z-[var(--layer-overlay)] flex items-center justify-center bg-foreground/40 p-4"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && closeOnBackdropClick) {
           onCloseRequest("backdrop");
@@ -248,7 +247,7 @@ export function Modal({
         aria-describedby={description === undefined ? undefined : descriptionId}
         tabIndex={-1}
         className={cn(
-          "flex w-full max-w-[420px] flex-col gap-4 rounded-lg border border-border bg-card p-6 text-card-foreground shadow-soft focus:outline-none",
+          "flex w-full max-w-[var(--size-dialog-sm)] flex-col gap-4 rounded-lg border border-border bg-card p-6 text-card-foreground shadow-soft focus:outline-none",
           className,
         )}
       >
@@ -270,7 +269,7 @@ export function Modal({
               onClick={() => onCloseRequest("close-button")}
               className="-m-2 shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-2 leading-none text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none"
             >
-              <X size={16} aria-hidden />
+              <X className="size-[var(--size-icon-sm)]" aria-hidden />
             </button>
           ) : null}
         </div>

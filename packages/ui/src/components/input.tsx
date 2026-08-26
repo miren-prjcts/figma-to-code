@@ -43,7 +43,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
           data-slot="input-leading-adornment"
           className={cn(
             "pointer-events-none absolute top-1/2 left-3 z-10 flex shrink-0 -translate-y-1/2 text-muted-foreground",
-            disabled && "opacity-50",
+            disabled && "opacity-[var(--opacity-disabled)]",
           )}
           aria-hidden="true"
         >
@@ -57,7 +57,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
         disabled={disabled}
         readOnly={readOnly}
         className={cn(
-          "h-[var(--size-control-md)] w-full rounded-md border border-input bg-background px-3 text-sm text-foreground transition-[color,background-color,border-color,box-shadow,opacity] placeholder:text-muted-foreground read-only:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-50 aria-invalid:border-destructive-foreground aria-invalid:focus-visible:ring-destructive-foreground",
+          "h-[var(--size-control-md)] w-full rounded-md border border-input bg-background px-3 text-sm text-foreground transition-[color,background-color,border-color,box-shadow,opacity] placeholder:text-muted-foreground read-only:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-[var(--opacity-disabled)] aria-invalid:border-invalid-border aria-invalid:focus-visible:ring-invalid-ring",
           leadingAdornment && "pl-9",
           trailingAdornment && "pr-9",
           className,
@@ -69,7 +69,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
           data-slot="input-trailing-adornment"
           className={cn(
             "pointer-events-none absolute top-1/2 right-3 z-10 flex shrink-0 -translate-y-1/2 text-muted-foreground",
-            disabled && "opacity-50",
+            disabled && "opacity-[var(--opacity-disabled)]",
           )}
           aria-hidden="true"
         >
