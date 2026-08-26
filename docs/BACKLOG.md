@@ -2,6 +2,12 @@
 
 Status meanings: **Proposed** = discussed only; **Planned** = ticket written, execution not approved; **Active** = explicitly approved and in progress; **Review** = awaiting supervisor validation; **Done** = verified and integrated.
 
+Governance: before proposing or scoping a new component or token, see the
+[Design System Charter](DESIGN_SYSTEM_CHARTER.md) (reusable scope, component-selection principles,
+token/state/accessibility standards), the [Component Lifecycle](COMPONENT_LIFECYCLE.md) (proposal
+through release notes), and the [Figma / Code Parity Checklist](FIGMA_PARITY_CHECKLIST.md) (code
+review before serialized Figma work).
+
 ## Planned
 
 | Priority | Workstream                                                                                          | Status   | Dependency                                                           |
@@ -32,3 +38,6 @@ Status meanings: **Proposed** = discussed only; **Planned** = ticket written, ex
 
 - Data Table, Tree View, Calendar/Date Picker, Charts, Command Menu, Side Navigation, Breadcrumbs, rich text, file upload, and advanced combobox/multiselect remain outside the current execution batch.
 - The first seven named families are committed roadmap scope for this reusable starter, after foundations and universal core work. Each still requires a focused discovery, plan, and execution approval cycle to avoid premature APIs.
+- This is the working precedent for the component-selection test in
+  [Design System Charter §4](DESIGN_SYSTEM_CHARTER.md#4--component-selection-principles): each of
+  these families fails the "a single correct API exists" test today.

@@ -58,3 +58,32 @@ Palette: pure-neutral, `primary` inverts off-black ↔ off-white between modes, 
 
 - Fonts: **Geist** (sans) + **Geist Mono**. In code via `@fontsource-variable/geist` (families `Geist Variable` / `Geist Mono Variable`). In Figma: text styles on Geist.
 - Breakpoints = Tailwind 4 defaults: `sm 640 · md 768 · lg 1024 · xl 1280 · 2xl 1536`.
+- Text styles currently bind only their color-fill to a Figma variable; `--font-size-*` /
+  `--line-height-*` are not yet bound as Figma number Variables (confirmed via a live
+  `get_variable_defs` check on a sampled text node). Binding them is `DSV2-004` scope, not yet
+  executed — see [`FIGMA_PARITY_CHECKLIST.md`](./FIGMA_PARITY_CHECKLIST.md#known-current-gap-as-of-this-ticket).
+
+## 6 · DSV2-001 interaction/foundation additions (code-integrated, Figma parity pending)
+
+`DSV2-001` added semantic state roles and cross-product foundation scales to
+`packages/tokens/src/tokens.css`. These are **integrated in code**; mapping them into Figma
+Variables is `DSV2-004` scope and has not run yet as of this writing — do not assume the collections
+below already exist in the Figma file without verifying through the Plugin API first.
+
+| Token                | Light              | Dark               | Consumer(s)                                                                     |
+| -------------------- | ------------------ | ------------------ | ------------------------------------------------------------------------------- |
+| `--primary-hover`    | `gray-800`         | `gray-200`         | Button (solid variant, hover)                                                   |
+| `--primary-pressed`  | `gray-700`         | `gray-300`         | Button (solid variant, active/pressed)                                          |
+| `--invalid-border`   | `red-700`          | `red-400`          | Input (`aria-invalid` border)                                                   |
+| `--invalid-ring`     | `red-700`          | `red-400`          | Input (`aria-invalid` focus ring)                                               |
+| `--opacity-disabled` | `0.5`              | `0.5`              | Button, Input (disabled)                                                        |
+| `--layer-overlay`    | `50`               | `50`               | Modal (stacking context)                                                        |
+| `--size-icon-sm`     | `1rem`             | `1rem`             | Modal close icon, Modal loading spinner                                         |
+| `--size-icon-md`     | `1.25rem`          | `1.25rem`          | StatCard overflow-action icon                                                   |
+| `--size-target-min`  | `2.75rem`          | `2.75rem`          | Approved near-term: StatCard action (`DSV2-002`) — no component consumes it yet |
+| `--size-dialog-sm`   | `26.25rem` (420px) | `26.25rem` (420px) | Modal surface max width                                                         |
+
+A `selected` state role was scoped as a candidate in `DSV2-001` but was deliberately not added —
+no component has a current selected-state need. See
+[`DESIGN_SYSTEM_CHARTER.md`](./DESIGN_SYSTEM_CHARTER.md#5--state-model) for the full state-model
+rationale.
