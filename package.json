@@ -3,6 +3,9 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "pnpm": "9.15.4"
+  },
   "scripts": {
     "storybook": "pnpm --filter @repo/storybook storybook",
     "build-storybook": "pnpm --filter @repo/storybook build-storybook",

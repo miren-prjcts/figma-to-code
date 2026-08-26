@@ -20,11 +20,17 @@ Layers: **tokens** (values) → **ui** (components that consume tokens through c
 ## Quick start
 
 ```bash
-corepack enable pnpm        # once: enables pnpm through Node
-pnpm install
+corepack enable                         # once: enables Corepack through Node
+corepack prepare pnpm@9.15.4 --activate # activates the repository's pinned pnpm
+pnpm --version                          # must print 9.15.4
+pnpm install --frozen-lockfile
 pnpm storybook              # → http://localhost:6006
 pnpm --filter @repo/web dev # → http://localhost:3000
 ```
+
+The root `package.json` and CI both pin pnpm `9.15.4`. Do not use pnpm 11 for
+this repository: it generated unsupported `allowBuilds` placeholders and any
+build-script approval requires a separate security review.
 
 Other commands:
 
@@ -82,7 +88,7 @@ pnpm exec playwright install chromium
 
 1. Copy the directory (or use “Use this template” if it is on GitHub).
 2. Rename `name` in the root `package.json`.
-3. `corepack enable pnpm && pnpm install`.
+3. `corepack enable && corepack prepare pnpm@9.15.4 --activate && pnpm install --frozen-lockfile`.
 4. Replace the sample components with your own and add your tokens to `packages/tokens`.
 
 ## Stack
