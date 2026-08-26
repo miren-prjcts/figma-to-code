@@ -26,6 +26,7 @@ The code-backed Figma file is:
 - DS v1 code contracts for Button, Input, Badge, StatCard, and Modal are integrated locally and awaiting final Figma parity.
 - The Figma file's existing component sets cannot currently expose their property definitions through the plugin API (`Component set has existing errors`). Do not mutate or replace them without a safe repair decision.
 - The DS v1 component-contract execution batch is documented in `docs/tickets/`.
+- The controlled Figma replacement and pnpm alignment plans are ticketed and await explicit execution approval.
 - Follow-on work is ticketed only and remains pending approval.
 - Figma component work must be code-contract-first and serialized through the primary agent.
 
