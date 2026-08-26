@@ -4,19 +4,19 @@ Status meanings: **Proposed** = discussed only; **Planned** = ticket written, ex
 
 ## Planned
 
-| Priority | Workstream | Status | Dependency |
-| --- | --- | --- | --- |
-| 1 | Complete DS v1 component contracts: Button, Input, Badge, StatCard, Modal | Planned | User execution approval |
-| 2 | DS v1.1 form and selection controls | Planned | Completed DS v1 component contracts |
-| 3 | DS v1.2 feedback and overlay components | Planned | Completed DS v1 component contracts |
-| 4 | DS v1.3 navigation, data states, and utilities | Planned | Completed DS v1 component contracts |
-| 5 | DS composition patterns and application templates | Planned | Relevant component families complete |
-| 6 | DS quality gates, documentation, and release workflow | Planned | Stable component APIs |
+| Priority | Workstream                                                                | Status  | Dependency                                                              |
+| -------- | ------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------- |
+| 1        | Complete DS v1 component contracts: Button, Input, Badge, StatCard, Modal | Active  | Code contracts integrated; Figma component-set repair decision required |
+| 2        | DS v1.1 form and selection controls                                       | Planned | Completed DS v1 component contracts                                     |
+| 3        | DS v1.2 feedback and overlay components                                   | Planned | Completed DS v1 component contracts                                     |
+| 4        | DS v1.3 navigation, data states, and utilities                            | Planned | Completed DS v1 component contracts                                     |
+| 5        | DS composition patterns and application templates                         | Planned | Relevant component families complete                                    |
+| 6        | DS quality gates, documentation, and release workflow                     | Planned | Stable component APIs                                                   |
 
 ## Completed
 
-| Workstream | Outcome |
-| --- | --- |
+| Workstream     | Outcome                                                                                                                      |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | DS foundations | Code-linked Figma token collections, Geist typography, Light/Dark aliases, effect styles, and foundation documentation pages |
 
 ## Out of current component scope

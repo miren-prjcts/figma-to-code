@@ -1,9 +1,9 @@
 # Active Issues
 
-## GitHub push access
+## Figma component-set structural error
 
-The local repository contains commit `8d8faf2`, but pushing to `https://github.com/miren-prjcts/figma-to-code.git` failed with HTTP 403. The current GitHub identity does not have write access. Resolve repository access or authenticate with an authorized account before retrying a push.
+The existing local Button, Input, Badge, Stat Card, and Modal component sets on the `Components` page return `Component set has existing errors` when their property definitions are read through the Figma Plugin API. The sets predate the current DS v1 execution batch, so they must not be deleted or rebuilt blindly. Inspect and repair the sets in Figma, or explicitly approve a controlled replacement plan, before the code-to-Figma parity phase resumes.
 
 ## pnpm ignored build scripts
 
-The Husky pre-commit hook triggers a pnpm install that fails under the managed environment because `esbuild` and `sharp` build scripts are ignored. Direct project checks previously passed, but the hook needs an environment-level dependency policy decision before it can be relied upon.
+The Husky pre-commit hook triggers a pnpm install that fails under the managed environment because `esbuild` and `sharp` build scripts are ignored. A frozen script-free install also cannot complete here because supply-chain verification requires registry access that is unavailable. Direct code checks must use an already provisioned dependency tree until an environment-level dependency policy decision is made.

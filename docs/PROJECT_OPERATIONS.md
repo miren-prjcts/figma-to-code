@@ -23,7 +23,9 @@ The code-backed Figma file is:
 
 - Design-system foundations are complete in Figma: local Color, Spacing, Size, Radius, and Typography variables; Geist styles; Light/Dark semantic colors; foundations documentation.
 - The source repository has local commit `8d8faf2` (`feat: establish design system v1 foundations`).
-- Component-contract work is planned but has not been approved for execution.
+- DS v1 code contracts for Button, Input, Badge, StatCard, and Modal are integrated locally and awaiting final Figma parity.
+- The Figma file's existing component sets cannot currently expose their property definitions through the plugin API (`Component set has existing errors`). Do not mutate or replace them without a safe repair decision.
+- The DS v1 component-contract execution batch is documented in `docs/tickets/`.
 - Follow-on work is ticketed only and remains pending approval.
 - Figma component work must be code-contract-first and serialized through the primary agent.
 

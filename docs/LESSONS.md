@@ -15,3 +15,7 @@ Set documentation frames and nested auto-layout containers to hug content vertic
 ## 2026-08-26 — Approval boundaries
 
 Creating tickets does not authorize execution. Confirm whether the user wants planning only, ticket creation, or implementation before dispatching work.
+
+## 2026-08-26 — Figma component-set recovery
+
+If Figma reports a component-set property error, stop before a mutation. Existing component sets are user-owned state unless their exact creation IDs are in the current run ledger; inspect or obtain explicit approval for a controlled replacement rather than deleting them by name.
