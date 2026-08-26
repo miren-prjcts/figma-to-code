@@ -12,11 +12,12 @@ Status meanings: **Proposed** = discussed only; **Planned** = ticket written, ex
 | 4        | DS composition patterns and application templates                                                   | Planned  | Relevant component families complete                                 |
 | 5        | DS quality gates, documentation, and release workflow                                               | Planned  | Stable component APIs                                                |
 | 6        | DS v2 reusable-starter foundations: semantic states, quality, governance                            | Planned  | Execution approval: [DSV2-001–005](tickets/README.md)                |
-| 7        | DS v2.1 universal form core: FormField, Textarea, Select, Checkbox, Radio, Switch, IconButton       | Proposed | DSV2 foundations integrated; product-agnostic API discovery          |
-| 8        | DS v2.2 feedback and overlays: Skeleton, Alert, Toast, Tooltip, Popover                             | Proposed | DSV2 foundations integrated; interaction-state contract stable       |
-| 9        | DS v2.3 navigation and structural components: Breadcrumbs, Side Navigation                          | Proposed | Universal core complete; navigation-pattern discovery                |
-| 10       | DS v2.4 advanced data and command components: Data Table, Tree View, Calendar, Command Menu, Charts | Proposed | Validated use cases and separate discovery for each component family |
-| 11       | DS composition patterns and application templates                                                   | Proposed | Relevant component families complete                                 |
+| 7        | DSV2-006 self-hosted Playwright visual-regression harness for Storybook                             | Planned  | DSV2-002 and DSV2-005 integrated                                     |
+| 8        | DS v2.1 universal form core: FormField, Textarea, Select, Checkbox, Radio, Switch, IconButton       | Proposed | DSV2 foundations integrated; product-agnostic API discovery          |
+| 9        | DS v2.2 feedback and overlays: Skeleton, Alert, Toast, Tooltip, Popover                             | Proposed | DSV2 foundations integrated; interaction-state contract stable       |
+| 10       | DS v2.3 navigation and structural components: Breadcrumbs, Side Navigation                          | Proposed | Universal core complete; navigation-pattern discovery                |
+| 11       | DS v2.4 advanced data and command components: Data Table, Tree View, Calendar, Command Menu, Charts | Proposed | Validated use cases and separate discovery for each component family |
+| 12       | DS composition patterns and application templates                                                   | Proposed | Relevant component families complete                                 |
 
 ## Completed
 

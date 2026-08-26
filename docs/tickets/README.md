@@ -39,6 +39,7 @@ This batch implements the user-approved direction for a product-agnostic reusabl
 2. `DSV2-002` consumes that contract to harden the existing components; `DSV2-003` may proceed in parallel after the contract is stable enough to document.
 3. `DSV2-004` is serialized through the primary agent after reviewed code integration and completed `DSV1-006` staged replacement.
 4. `DSV2-005` reviews verified outcomes and records the next approval point.
+5. `DSV2-006` runs after `DSV2-002` and `DSV2-005` so its baseline screenshots capture the reviewed, hardened component states.
 
 | Ticket                                                      | Scope                                                               | Proposed owner               | Proposed reasoning |
 | ----------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------- | ------------------ |
@@ -47,3 +48,4 @@ This batch implements the user-approved direction for a product-agnostic reusabl
 | [DSV2-003](DSV2-003-system-documentation-governance.md)     | Charter, extension rules, Figma/code checklist, lifecycle           | `gpt-5.6-terra`              | high               |
 | [DSV2-004](DSV2-004-figma-foundation-parity.md)             | Serialized Figma foundation parity                                  | primary agent, `gpt-5.6-sol` | xhigh              |
 | [DSV2-005](DSV2-005-supervisor-review.md)                   | Integration, verification, and project records                      | primary agent, `gpt-5.6-sol` | high               |
+| [DSV2-006](DSV2-006-playwright-visual-regression.md)        | Self-hosted Playwright/Storybook visual-regression harness          | `gpt-5.6-terra`              | high               |
