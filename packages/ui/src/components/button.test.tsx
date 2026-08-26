@@ -95,6 +95,10 @@ describe("Button", () => {
       "aria-hidden",
       "true",
     );
+    expect(button.querySelector('[data-slot="button-spinner"]')).toHaveClass(
+      "animate-spin",
+      "motion-reduce:animate-none",
+    );
 
     await user.click(button);
     await user.click(button);

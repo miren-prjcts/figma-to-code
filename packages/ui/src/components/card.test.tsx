@@ -26,4 +26,18 @@ describe("StatCard", () => {
 
     expect(onClick).toHaveBeenCalledTimes(1);
   });
+
+  it("gives the overflow action a minimum pointer target sized from the shared token", () => {
+    render(
+      <StatCard
+        title="Components"
+        value="12"
+        action={{ label: "View components", onClick: vi.fn() }}
+      />,
+    );
+
+    const action = screen.getByRole("button", { name: "View components" });
+    expect(action).toHaveClass("size-[var(--size-target-min)]", "top-1", "right-1");
+    expect(action).toHaveClass("flex", "items-center", "justify-center");
+  });
 });

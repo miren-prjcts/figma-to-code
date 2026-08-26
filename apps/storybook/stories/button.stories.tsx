@@ -127,3 +127,30 @@ export const AllStates: Story = {
     </div>
   ),
 };
+
+/**
+ * The loading spinner is `animate-spin motion-reduce:animate-none`, so it only animates
+ * when the OS has no reduced-motion preference. Storybook's canvas doesn't expose a
+ * `prefers-reduced-motion` toolbar, so the right-hand button simulates the media query by
+ * forcing `animation: none` on the same `data-slot="button-spinner"` element the real CSS
+ * variant targets — it renders the identical static ring a reduced-motion user sees,
+ * without needing the OS setting itself.
+ */
+export const LoadingMotion: Story = {
+  name: "Loading — reduced motion",
+  render: () => (
+    <div style={{ display: "flex", gap: 32, alignItems: "flex-start" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+        <Button loading>Save changes</Button>
+        <span style={cellLabel}>No preference (animated)</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+        <style>{`.motion-reduce-demo [data-slot="button-spinner"] { animation: none; }`}</style>
+        <div className="motion-reduce-demo">
+          <Button loading>Save changes</Button>
+        </div>
+        <span style={cellLabel}>prefers-reduced-motion: reduce</span>
+      </div>
+    </div>
+  ),
+};

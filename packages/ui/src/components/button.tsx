@@ -83,7 +83,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
       {loading ? (
         <span
           data-slot="button-spinner"
-          className="absolute size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+          className="absolute size-4 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none"
           aria-hidden="true"
         />
       ) : null}
