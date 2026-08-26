@@ -115,6 +115,7 @@
   --layer-overlay: 50; /* Modal stacking context */
   --size-icon-sm: 1rem; /* Modal close icon, Modal loading spinner */
   --size-icon-md: 1.25rem; /* StatCard overflow-action icon */
+  --size-target-min: 2.75rem; /* Minimum interactive target — near-term consumer: DSV2-002 StatCard action */
   --size-dialog-sm: 26.25rem; /* Modal surface max width (420px at 16px root) */
 
   /* ── Statuses · soft (tinted background + saturated text), LIGHT ────────── */
