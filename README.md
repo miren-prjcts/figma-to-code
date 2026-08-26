@@ -49,6 +49,12 @@ Open `packages/tokens/src/tokens.css`, change a semantic token (for example, `--
 
 Create a new file in `packages/ui/src/components/`, define variants with `cva`, use colors **only** from tokens (`bg-*`), export it from `src/index.ts`, and add a story in `apps/storybook/stories/`. The shadcn CLI is optional (`components.json` is ready), but components work without it.
 
+### Modal contract
+
+`Modal` is controlled: pass `open` and update it when `onCloseRequest` reports an Escape-key, close-button, or permitted backdrop request. Backdrop dismissal is disabled by default; opt in with `closeOnBackdropClick`. A primary action is required and a secondary action is optional. Each action supports `default`, `disabled`, and `loading` states. Action callbacks do not close the modal automatically, so async completion and validation remain under consumer control.
+
+When open, the modal moves focus inside, traps keyboard focus, locks body scrolling, and returns focus to the previously focused element after the consumer closes it. Keep `title` meaningful; omit `description` rather than passing unrelated help text.
+
 ## Tests and pull request requirements
 
 Every behavior change must be accompanied by tests. This applies to both new components and changes to existing ones.
