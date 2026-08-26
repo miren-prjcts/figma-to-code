@@ -31,3 +31,17 @@ export const Stats: Story = {
     </div>
   ),
 };
+
+export const WithAction: Story = {
+  args: {
+    action: {
+      label: "View total products",
+      onClick: () => undefined,
+    },
+  },
+  render: (args) => (
+    <div style={{ width: 220 }}>
+      <StatCard {...args} />
+    </div>
+  ),
+};

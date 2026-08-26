@@ -4,7 +4,8 @@ import { cn } from "../lib/utils";
 
 /**
  * Status badge — soft style: tinted background (bg-*-surface) + saturated text (text-*-foreground).
- * Colors come ONLY from semantic tokens, with no hex values. Change a token in @repo/tokens → every badge updates.
+ * Colors come ONLY from semantic tokens, with no hex values. Their light and dark
+ * foreground/surface pairs provide the contrast contract for every tone.
  *
  * Stock status maps as follows: In stock → success · Low → warning · Out → destructive.
  */
@@ -20,8 +21,14 @@ const badgeVariants = cva("inline-flex items-center rounded-md px-2 py-0.5 text-
   defaultVariants: { tone: "info" },
 });
 
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof badgeVariants> {}
+type NonInteractiveSpanProps = Omit<
+  React.HTMLAttributes<HTMLSpanElement>,
+  keyof React.DOMAttributes<HTMLSpanElement> | "contentEditable" | "draggable" | "role" | "tabIndex"
+>;
+
+export interface BadgeProps extends NonInteractiveSpanProps, VariantProps<typeof badgeVariants> {
+  children?: React.ReactNode;
+}
 
 export function Badge({ className, tone, ...props }: BadgeProps): React.ReactElement {
   return <span className={cn(badgeVariants({ tone }), className)} {...props} />;

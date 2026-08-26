@@ -28,3 +28,14 @@ export const AllTones: Story = {
     </div>
   ),
 };
+
+export const DarkSemanticTones: Story = {
+  render: () => (
+    <div className="dark bg-background p-4" style={{ display: "flex", gap: 8 }}>
+      <Badge tone="info">Info</Badge>
+      <Badge tone="success">Success</Badge>
+      <Badge tone="warning">Warning</Badge>
+      <Badge tone="destructive">Error</Badge>
+    </div>
+  ),
+};

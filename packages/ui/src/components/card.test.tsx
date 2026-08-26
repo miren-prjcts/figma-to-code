@@ -1,13 +1,29 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
 import { StatCard } from "./card";
 
 describe("StatCard", () => {
-  it("renders its content and accessible options action", () => {
+  it("renders a compact metric without an action by default", () => {
     render(<StatCard title="Components" value="12" />);
 
     expect(screen.getByText("Components")).toBeInTheDocument();
     expect(screen.getByText("12")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "More options" })).toBeInTheDocument();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.getByText("Components").tagName).toBe("DT");
+    expect(screen.getByText("12").tagName).toBe("DD");
+  });
+
+  it("renders an explicitly configured action with an accessible name", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+
+    render(
+      <StatCard title="Components" value="12" action={{ label: "View components", onClick }} />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "View components" }));
+
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
