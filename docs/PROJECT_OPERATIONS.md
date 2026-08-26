@@ -23,12 +23,10 @@ The code-backed Figma file is:
 
 - Design-system foundations are complete in Figma: local Color, Spacing, Size, Radius, and Typography variables; Geist styles; Light/Dark semantic colors; foundations documentation.
 - The source repository has local commit `8d8faf2` (`feat: establish design system v1 foundations`).
-- DS v1 code contracts for Button, Input, Badge, StatCard, and Modal are integrated locally and awaiting final Figma parity.
-- The Figma file's existing component sets cannot currently expose their property definitions through the plugin API (`Component set has existing errors`). Do not mutate or replace them without a safe repair decision.
+- DS v1 code contracts for Button, Input, Badge, StatCard, and Modal are integrated locally, and Figma parity is complete: DSV1-006 staged all five components on a dedicated staging page, validated metadata/screenshots/Light-Dark bindings, and — after user visual-checkpoint approval — cut them over to the canonical `Components` page (`6:8`). The five legacy component sets (which could not expose property definitions through the plugin API) were archived, not deleted: renamed with an `ARCHIVED (2026-08-26)` prefix and moved to page `Archive / DS v1 Legacy (pre-2026-08-26)`, preserving their original node IDs and paired documentation frames.
 - The DS v1 component-contract execution batch is documented in `docs/tickets/`.
-- The controlled Figma replacement plan remains ticketed and awaits explicit execution approval.
 - DSV1-007 aligned the repository with pnpm `9.15.4` and removed pnpm-11-generated build-script placeholders. A full frozen install and verification suite (typecheck, 32/32 tests, lint, build) passed cleanly; see `docs/ISSUES.md` for the exact evidence and the earlier transient registry-access failure it superseded.
-- Follow-on work is ticketed only and remains pending approval.
+- Follow-on work (DS v2 and later) is ticketed only and remains pending approval.
 - Figma component work must be code-contract-first and serialized through the primary agent.
 
 ## Verification standard

@@ -1,8 +1,8 @@
 # Active Issues
 
-## Figma component-set structural error
+## Resolved: Figma component-set structural error
 
-The existing local Button, Input, Badge, Stat Card, and Modal component sets on the `Components` page return `Component set has existing errors` when their property definitions are read through the Figma Plugin API. The sets predate the current DS v1 execution batch, so they must not be deleted or rebuilt blindly. Inspect and repair the sets in Figma, or explicitly approve a controlled replacement plan, before the code-to-Figma parity phase resumes.
+The original local Button, Input, Badge, Stat Card, and Modal component sets on the `Components` page returned `Component set has existing errors` when their property definitions were read through the Figma Plugin API. Per DSV1-006, they were not repaired or rebuilt in place: five new code-aligned sets were staged on a dedicated page, validated (metadata, screenshots, Light/Dark bindings, live property-toggle tests), and — after explicit user visual-checkpoint approval on 2026-08-26 — moved to the canonical `Components` page. The five original sets were archived (renamed with an `ARCHIVED (2026-08-26)` prefix, moved with their documentation frames to page `Archive / DS v1 Legacy (pre-2026-08-26)`), not deleted; their original node IDs are unchanged by the page move. No further action needed unless the archive is deliberately purged in the future.
 
 ## Managed pnpm and registry access
 
