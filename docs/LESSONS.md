@@ -25,3 +25,18 @@ If Figma reports a component-set property error, stop before a mutation. Existin
 A worktree-isolated execution agent (DSV2-001) was launched without first confirming that `origin/main` matched local `main`. Local `main` had 10 commits (all of DS v1's component work, the controlled-dialog Modal implementation, and the pnpm alignment) that had never been pushed. The tool's built-in worktree isolation based the agent's checkout on `origin/main`, 7 commits behind — the agent unknowingly edited a pre-accessible-Modal version of `modal.tsx` and would have regressed the focus-trap/scroll-lock/portal implementation if its diff had been merged as-is. The staleness was only caught because the integrating session diffed the agent's final files against the _current_ real files before merging, rather than trusting `git merge` or the agent's own "typecheck/test/lint/build all passed" report — the checks passed because they ran inside the stale worktree, consistent with the stale files, not because the work was correct against the real codebase.
 
 **Before launching any worktree-isolated agent:** run `git log --oneline origin/<default-branch>..<default-branch>` (or equivalent) first. If local is ahead, either push first or create the worktree manually from the local branch tip (`git worktree add <path> <local-branch>`) instead of relying on default isolation. **Before integrating any agent's work, regardless of isolation method:** diff the agent's final file contents against the current real files on the target branch, not just against the agent's own starting commit — a clean self-reported diff can still be wrong if the base it diffed from was wrong. Do not treat a subagent's verification report as sufficient evidence on its own; re-run the verification suite on the real integration target after merging.
+
+## 2026-08-26 — Figma opacity bindings can misresolve FLOAT variables
+
+`node.setBoundVariable("opacity", variable)` can resolve the local
+`Foundation/disabled` FLOAT value `0.5` as approximately `0.005` on a
+FRAME/COMPONENT node. Always read back `node.opacity` after binding an opacity
+variable. If this defect reproduces, unbind it and assign the verified literal
+instead; record the exception and do not alter the token or invent a duplicate.
+
+## 2026-08-26 — Turbo force execution can bypass Corepack's pinned pnpm
+
+In this managed environment, `corepack pnpm exec turbo run <task> --force`
+causes Turbo child processes to resolve the injected pnpm 11 fallback, violating
+the repository's pnpm 9.15.4 engine. For uncached verification, run each
+package script directly through `corepack pnpm --filter <package> <script>`.

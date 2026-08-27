@@ -1,5 +1,50 @@
 # DSV2-007 — Component State Parity in Figma
 
+## Execution package — approved plan (2026-08-26)
+
+**Status:** Complete (2026-08-26). The verified handoff is recorded in
+[`DSV2-005-007-handoff.md`](DSV2-005-007-handoff.md).
+
+**Owner and reasoning:** primary agent, `gpt-5.6-sol`, xhigh. The work mutates a
+single shared Figma library and includes a known Plugin API defect, so it must be
+serial and supervised rather than delegated or performed in parallel worktrees.
+
+**Execution order:**
+
+1. Inspect Button variants `69:11`, `69:16`, `69:21`, `69:26`, `69:31`, and
+   `69:36`. If the `Foundation/disabled` opacity binding reads back as `0.005`,
+   remove that binding and assign the verified literal `0.5`; otherwise retain
+   the correct existing value. Record the result as a documented Plugin API
+   workaround, not as a token change.
+2. Convert Modal (`53:2`) to an inspectable state representation without
+   changing its public code contract: swap the existing primary/secondary
+   Button instances (`53:15`, `53:10`) to their new Button state variants;
+   expose default, disabled, and loading action appearances; and expose
+   `showCloseButton` on/off. Reuse the existing Button instances, variables,
+   and component properties rather than rebuilding action visuals.
+3. Update the current Button and Stat Card documentation frames (`59:6`,
+   `59:24`) so their state matrices match the component sets. The current
+   approved scope is two frames; the older reference to five frames elsewhere
+   in this ticket is superseded.
+4. Validate component metadata, variable bindings, instance integrity, and a
+   combined `Components`-page screenshot. Check specifically that the Modal
+   conversion did not break existing instances.
+5. Run the DSV2-005 supervisor review against the completed DSV2-001–004 and
+   DSV2-007 evidence; update `PROJECT_OPERATIONS.md`, `BACKLOG.md`,
+   `ISSUES.md`, and any durable decision/lesson records only with verified
+   facts. Produce the DSV2-005/007 handoff report. Do not start DSV2-006.
+
+**Scope limits:** no source-code/API change, new token, Figma staging page,
+archive deletion, commit, push, or DSV2-006 implementation. The current
+Components page is the approved direct-build location: Button and StatCard were
+already safely converted there, and reopening a staging/cutover path would add
+unnecessary structural risk.
+
+**Completion evidence:** read-back opacity values for all six Button disabled
+variants; Modal property/variant inspection and screenshot; updated
+documentation-frame text; a final Components screenshot; and the concise
+DSV2-005/007 report with exact verification outcomes and residual API risk.
+
 ## Dependency
 
 `DSV2-001`, `DSV2-002`, and `DSV2-004` are integrated. Figma work is serialized through the primary agent.
@@ -46,3 +91,13 @@ The same audit found and removed two stale Figma pages (`Components / DS v1 Stag
 ## Handoff
 
 Report the state matrix per component, before/after screenshots, and confirm no other page references the old single-component IDs before they're replaced.
+
+**Completed:** StatCard has 4 action variants, and Modal has 9 independent
+action-state combinations while retaining the optional-secondary and
+close-button Boolean properties. Metadata, visual evidence, cross-page
+instance inspection, and the current integration checkout are recorded in the
+linked handoff. Button's variant count was originally recorded as 24; this
+undercounted the structure needed for a correct `loading` state and was
+corrected to 30 (`variant × size × state`, with `loading` as a 5th `state`
+value) under
+[`DSV2-007-D`](DSV2-007-D-loading-structure-correction.md).

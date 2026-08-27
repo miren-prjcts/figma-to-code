@@ -67,6 +67,28 @@ Figma work never starts before this order is satisfied, and it never runs in par
       updated with the verified outcome once the work lands, per
       `COMPONENT_LIFECYCLE.md` §6 and §9.
 
+## File information architecture (locked 2026-08-27)
+
+One Figma page per component family — the same convention `Foundations / Color`/`Typography`/
+`Layout`/`Effects` already used, extended to `Components` as it grows past the original 5:
+
+| Page                      | Contents                                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------------------ |
+| `Foundations / Icons`     | Private icon components + their documentation frame (moved out of `Components` 2026-08-27) |
+| `Components / Core`       | Button, Input, Badge, StatCard, Modal (renamed from `Components` 2026-08-27)               |
+| `Components / Forms`      | Phase 1 — FormField, Select, Checkbox, Radio, Switch, Textarea, IconButton                 |
+| `Components / Feedback`   | Phase 2 — Alert, Toast, Tooltip, Popover, Skeleton, Spinner, Dropdown Menu                 |
+| `Components / Navigation` | Phase 3 — Tabs, Breadcrumbs, Pagination                                                    |
+| `Components / Structural` | Phase 3 — Avatar, Divider, Progress bar, Empty state, Stack/Container/Grid                 |
+| `Foundations / Motion`    | Phase 0 — duration/easing token specimens (not yet created)                                |
+
+Create a new family page only when its phase actually starts — do not pre-create empty Phase 1–3
+pages ahead of their code contracts landing; that would be Figma work running ahead of the code it's
+supposed to mirror, which this checklist's non-negotiable order (above) exists to prevent. Moving or
+renaming an _existing, already-integrated_ page (as done for Icons/Core) is not covered by that
+order, since it changes no component's code-mirrored content — but still gets the same document-wide
+broken-instance scan and screenshot validation before being considered done.
+
 ## Resolved gap: typography variable binding (`DSV2-004`)
 
 Figma's 9 typography text styles were previously not bound to number Variables for size/line-height

@@ -1,51 +1,80 @@
 # Active Issues
 
-## In progress: DSV2-007 component-state parity — session paused mid-ticket (2026-08-26)
+## Resolved: Modal / State specimens frame data loss (2026-08-27)
 
-Work is **not finished**. Session paused (approaching usage limit) partway through `docs/tickets/DSV2-007-component-state-parity.md`. State as of pause, verified live via `use_figma` against file `jiDhe0OZzNgiDbc3Z9Hh5n`:
+The `Modal / State specimens` frame (`89:59`) and all five of its specimens were found completely
+absent from the document — not moved or renamed, `getNodeByIdAsync` returned `null` for the frame
+and every child ID previously recorded, and a document-wide name search found nothing. No script run
+in this session called `.remove()` on that subtree, so the exact cause is unconfirmed; the Plugin API
+has no access to Figma's own file version history, so a definitive cause can only come from checking
+that history directly in the Figma app. Per user instruction, rebuilt from the documented
+specification rather than chasing the history further. The rebuild is fully live-instance-based (a
+Modal instance per specimen, with nested `primaryAction`/`secondaryAction` Button instances overridden
+via `setProperties`) — an improvement on the original, which still mixed in a couple of hand-built
+approximation frames for the disabled-combo specimens. Verified: document-wide instance scan (118
+instances, 0 broken) and a screenshot matching the original specimen-by-specimen content exactly.
 
-**Done and validated (screenshot-confirmed):**
+## Resolved: DSV2-007-D Button loading structure defect (2026-08-26)
 
-- **Button** (`32:32`): fully converted — now 24 variants (`variant`×`size`×`state`), `state` = `default/hover/pressed/disabled`. Solid uses `--primary-hover`/`--primary-pressed`; outline/ghost use existing `muted`/`secondary`; disabled uses `--opacity-disabled`. Laid out in a clean grid. No public code API touched.
-- **StatCard** (now a `COMPONENT_SET` at `70:24`, was single `COMPONENT` `50:2`): converted to `action` = `none/default/hover/disabled`. Pre-existing `title`/`value` TEXT component properties were preserved (they were legitimately bound, not orphaned). Two **orphaned** component properties (`action#70:2` boolean, `actionLabel#70:3` text — leftover from before the user manually deleted the old unstructured `actionIcon`/`actionLabel` layers) were removed via `deleteComponentProperty`. A real bug was found and fixed: appending a new child to StatCard's auto-layout root made it flow into the layout stack instead of sitting at the intended absolute top-right position — fixed by setting `layoutPositioning = "ABSOLUTE"` before positioning.
+An independent post-completion audit (not the executing agent's own report)
+visually re-checked DSV2-007-C's claimed-complete Button and Modal loading
+states and found the spinner rendering directly on top of the label text.
+Plugin API inspection confirmed the root cause: `loadingIndicator` was bound
+to the `loading` boolean's visibility, but `label` had no complementary
+binding to hide itself — Figma has no invert-binding for `visible`. Fixed by
+converting `loading` from a boolean into a 5th Button `state` variant
+(30 variants total, not 24). Also found and fixed a second, unrelated
+pre-existing gap while repairing `leadingIcon`/`trailingIcon` (previously
+literal arrow-glyph text, not real icons): the visibility binding for those
+two properties only existed on the 6 `state=default` leaves, not the other 18. Same day, the user asked for a different visual treatment of the
+`loading` state — a leading spinner plus visible "Loading…" text instead of
+a hidden label with a centered spinner — which required a matching change to
+`packages/ui/src/components/button.tsx` (content now hidden with `sr-only`
+so the original accessible name is preserved for assistive tech, per the
+user's explicit choice) and its test, in addition to the Figma rebuild. See
+[`DSV2-007-D`](tickets/DSV2-007-D-loading-structure-correction.md) for full
+evidence (before/after screenshots, metadata, document-wide instance scan,
+and the `packages/ui` verification suite).
 
-**Known Figma Plugin API bug found, only one instance fixed so far:** binding a `FLOAT`/`OPACITY`-scoped variable to a node's `opacity` property via `node.setBoundVariable("opacity", variable)` resolves to the wrong value — the `Foundation/disabled` variable's stored value is confirmed `0.5`, but after binding, `node.opacity` reads back as `0.005` (100× too small), reproducibly, even after unbind/rebind. Direct literal assignment (`node.opacity = 0.5`) works correctly. **Applied the literal-value workaround only to StatCard's `action=disabled` variant's `action` frame** (id `70:22`, no longer variable-bound — a documented, deliberate exception to "every value traces to a variable"). **Not yet checked**: whether this same bug affects any other opacity binding in the file (Button's disabled variants use this same `Foundation/disabled` variable via `setBoundVariable("opacity", opacityVar)` on their whole component node — **this needs to be re-verified**, it may have the same 0.005 bug and just wasn't caught because disabled buttons are supposed to look faint anyway).
+## Resolved: DSV2-007-C icon and component-state parity correction (2026-08-26)
 
-**Not started:**
+Visual review rejected the prior DSV2-007 completion claim: Modal's unlabelled
+3×3 matrix did not communicate real states, loading did not render its actual
+icon treatment, action labels were reset to `Button`, and StatCard's action
+states were not adequately represented with the code's real icon asset.
+`docs/tickets/DSV2-007-correction-icon-state-parity.md` corrected icon
+sourcing and Modal's Boolean-property structure; its Button/Modal
+loading-state completion claim was itself later found incomplete and is
+corrected by DSV2-007-D above.
 
-- **Modal** (`53:2`, still a single `COMPONENT`, zero variants): needs `primaryAction`/`secondaryAction` state representation. Modal already contains Button _instances_ (`primaryAction` id `53:15`, `secondaryAction` id `53:10`) — the plan was to swap their `mainComponent` to Button's new state variants (e.g. `variant=solid, size=sm, state=hover`) plus toggle the boolean `loading` property, rather than duplicating fill logic. Also needs a `showCloseButton` on/off representation.
-- Update the `Button / Documentation` and `Stat Card / Documentation` frames' state-matrix text (`59:6`, `59:24`) to describe the new states — required by DSV2-007's acceptance criteria, not done.
-- **Deviation from the ticket's own plan**: DSV2-007 said to stage on a temporary page first (`DSV1-006` precedent) before touching the canonical `Components` page. Time pressure led to building directly on `6:8` instead. This worked out (no instances broke, Button/StatCard both validated), but Modal — not yet touched — should probably get the same direct-build treatment for consistency rather than reintroducing a staging page now.
-- Final combined screenshot of the whole `Components` page, and the DSV2-007 handoff report itself.
-- No commit was made for the Figma-side work (Figma has its own persistence — nothing to commit in git). `docs/BACKLOG.md` still lists DSV2-007 as not started; it should move to `Active`/`Done` once this resumes and finishes.
-
-**To resume:** re-read `docs/tickets/DSV2-007-component-state-parity.md`, re-verify the opacity-binding bug on Button's disabled variants (`figma.getNodeByIdAsync` on the 6 `state=disabled` Button IDs — `69:11,69:16,69:21,69:26,69:31,69:36` — check `.opacity` read-back, fix with literal `0.5` if it shows `~0.005`), then build Modal's states, update the two Documentation frames, take a final screenshot, and write the DSV2-005/DSV2-007 handoff report before moving to DSV2-006 (Playwright harness, not started).
+The Figma Plugin API opacity-binding defect is confirmed on Button disabled
+variants `69:11`, `69:16`, `69:21`, `69:26`, `69:31`, and `69:36`: binding the
+stored `0.5` disabled token resolves to approximately `0.005`. Those six
+variants and StatCard's disabled action use a literal `0.5` workaround with no
+token or public code API change.
 
 ## Resolved: Figma component-set structural error
 
-The original local Button, Input, Badge, Stat Card, and Modal component sets on the `Components` page returned `Component set has existing errors` when their property definitions were read through the Figma Plugin API. Per DSV1-006, they were not repaired or rebuilt in place: five new code-aligned sets were staged on a dedicated page, validated (metadata, screenshots, Light/Dark bindings, live property-toggle tests), and — after explicit user visual-checkpoint approval on 2026-08-26 — moved to the canonical `Components` page. The five original sets were archived (renamed with an `ARCHIVED (2026-08-26)` prefix, moved with their documentation frames to page `Archive / DS v1 Legacy (pre-2026-08-26)`), not deleted; their original node IDs are unchanged by the page move.
-
-**Update, 2026-08-26 (later same day):** the user explicitly approved purging the archive, after confirming the replacement sets had been stable through the DSV2 batch. The `Archive / DS v1 Legacy (pre-2026-08-26)` page (5 archived component sets + their documentation frames) and the leftover `Components / DS v1 Staging` page (dead post-cutover preview content from the same ticket) were both deleted. Only the canonical `Components` page (`6:8`) remains as the source of component-set truth.
+The original local Button, Input, Badge, Stat Card, and Modal component sets on
+the `Components` page returned `Component set has existing errors` when their
+property definitions were read through the plugin API. Per DSV1-006, they were
+not repaired or rebuilt in place: five code-aligned sets were staged and
+validated, then cut over to the canonical `Components` page (`6:8`) after user
+visual-checkpoint approval. The legacy and temporary staging pages were later
+deleted with explicit user approval after the replacements remained stable.
 
 ## Managed pnpm and registry access
 
-Repository configuration pins pnpm `9.15.4` in `package.json`, `engines.pnpm`,
-and CI. The managed environment's plain `pnpm` executable can be an injected
-fallback of a different major version; invoke the intended runtime as
-`corepack pnpm` in this environment to guarantee `9.15.4`.
+Repository configuration pins pnpm `9.15.4` in `package.json`,
+`engines.pnpm`, and CI. Use `corepack pnpm` in this environment: plain pnpm can
+resolve to an injected fallback of another major version.
 
-On 2026-08-26, an earlier session's `corepack pnpm install --frozen-lockfile`
-could not download required packages because the registry hostname could not
-be resolved (`GET https://registry.npmjs.org/...` returned `ENOTFOUND`), so no
-complete dependency tree was available and the verification suite could not
-run at that time.
+`corepack pnpm install --frozen-lockfile` completed on 2026-08-26 (535
+packages). Direct package-script verification also passed on the integration
+checkout: typecheck for UI/Storybook/web, 33/33 UI tests, lint for
+UI/Storybook/web, and both production builds. `turbo --force` is not a valid
+uncached verifier here because its child processes use the injected pnpm 11
+fallback; use direct `corepack pnpm --filter <package> <script>` commands.
 
-A later session on the same date re-ran `corepack pnpm install --frozen-lockfile`
-with pnpm `9.15.4` and the same lockfile: the install completed (535 packages,
-no registry error), and the full verification suite passed — `typecheck`
-(3/3 packages), `test` (32/32 tests across button/input/badge/card/modal),
-`lint` (3/3 clean), and `build` (`@repo/storybook` and `@repo/web` both build
-successfully). The registry-access failure above was therefore transient to
-that specific run, not a standing block on this repository or environment. No
-`esbuild` or `sharp` build-script approval was added; any such approval
-remains a separate security decision, and no migration to pnpm 11 was made.
+No `esbuild` or `sharp` build-script approval was added, and no migration to
+pnpm 11 was made.

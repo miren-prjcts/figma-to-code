@@ -26,3 +26,8 @@ Verify the reusable-starter foundation batch before universal component work beg
 ## Handoff
 
 Provide a short evidence-backed report: completed work, checks, Figma parity status, risks, and the next approval point.
+
+**Completed 2026-08-26:** see
+[`DSV2-005-007-handoff.md`](DSV2-005-007-handoff.md) for the verified review,
+Figma state-parity evidence, residual Plugin API limitation, and DSV2-006
+approval point.

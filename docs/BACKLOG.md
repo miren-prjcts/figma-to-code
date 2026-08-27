@@ -64,3 +64,28 @@ are unaffected by this batch — see "Deferred until product-driven discovery" b
 - This is the working precedent for the component-selection test in
   [Design System Charter §4](DESIGN_SYSTEM_CHARTER.md#4--component-selection-principles): each of
   these families fails the "a single correct API exists" test today.
+
+## Named gaps not yet assigned to a phase
+
+From the 2026-08-27 DS Gap Audit, still open after the Phase 0/1 integration and not covered by
+Phase 2 or Phase 3's current scope above. Unlike the "Deferred until product-driven discovery" list,
+these are not deliberate exclusions — they simply have not been scheduled into a phase yet. Each
+needs its own scoping pass and phase assignment before execution, per the Golden workflow.
+
+- **Color**: no dedicated overlay/scrim token — Modal still composites `foreground/40` at the point
+  of use instead of consuming a named semantic role. Surface/foreground contrast ratios are not
+  documented as a checked fact anywhere; they appear only ad hoc in source comments (`4.6:1`,
+  `~8:1`).
+- **Typography**: no mapping from semantic page roles (H1–H6, lead, caption) to the 9 existing text
+  styles; no prose/rich-text style set for content pages; no fluid/responsive type scale across
+  viewports.
+- **Layout**: no breakpoints, no container/max-width tokens, no column grid. (`--size-control-lg`
+  itself shipped in `DSV2-013`; the rest of this category is still empty.)
+- **Input**: no password-visibility toggle, no character counter — common form companion patterns.
+- **Modal**: no documented behavior for long, scrolling content.
+- **Figma file and component organization**: as component families accumulate across Phases 1–3,
+  file/page structure and per-component presentation (naming, section layout, documentation-frame
+  placement) need an explicit, ongoing pass — not just the ad hoc reorganization already done in
+  `DECISIONS.md`'s 2026-08-27 "Figma file information architecture" and "Components / Core page
+  layout" entries. Treat this as a recurring need across every phase's serialized Figma work, not a
+  one-time cleanup.

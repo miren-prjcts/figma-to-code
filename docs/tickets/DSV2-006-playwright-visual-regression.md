@@ -2,7 +2,14 @@
 
 ## Dependency
 
-`DSV2-002` is integrated, so baseline screenshots capture the hardened interaction/accessibility states rather than states requiring an immediate re-baseline. `DSV2-005` review of the foundation batch is complete.
+`DSV2-002` and `DSV2-005` are integrated, so the initial baseline captures the hardened
+interaction/accessibility states of the five existing components. **Rescoped 2026-08-27**: this
+ticket no longer waits for Phase 1 to finish — it starts alongside `DSV2-011`/`DSV2-012`/`DSV2-013`
+(and its sibling `DSV2-014` vitest-axe ticket) so verification tooling exists from Phase 1's first
+commit rather than being bolted on afterward, per `BACKLOG.md`'s Phase Plan. The Storybook
+screenshot baseline is captured for the five existing components immediately, then extended
+incrementally as each Phase 1 component lands; `DSV2-016` (Phase 1 supervisor review) confirms full
+Phase 1 coverage before closing the phase.
 
 ## Objective
 
@@ -11,7 +18,7 @@ Add a self-hosted, free visual-regression harness for Storybook using Playwright
 ## Scope
 
 - Add `@storybook/test-runner` as a dev dependency and configure it to run against the built Storybook (`apps/storybook`).
-- Add a Playwright-based visual test that iterates the Storybook story index and calls `expect(page).toHaveScreenshot()` for each published story (all Button/Input/Badge/StatCard/Modal variants and the tokens story), covering both Light and Dark themes.
+- Add a Playwright-based visual test that iterates the Storybook story index and calls `expect(page).toHaveScreenshot()` for each published story (Button/Input/Badge/StatCard/Modal today, each Phase 1 component as it lands, and the tokens story), covering both Light and Dark themes.
 - Commit baseline screenshots to the repository under a dedicated snapshot directory.
 - Pin the rendering environment (browser/OS via the existing `@playwright/test` Desktop Chrome project, or a Docker image if local/CI rendering diverges) so diffs reflect real visual changes, not font-hinting or OS-rendering noise.
 - Wire a new job or step into `.github/workflows/ci.yml` alongside the existing `test:e2e` step, uploading the diff artifact on failure.
@@ -23,6 +30,7 @@ Add a self-hosted, free visual-regression harness for Storybook using Playwright
 - Visual coverage of `apps/web` application pages beyond what `tests/e2e/home.spec.ts` already exercises; this ticket scopes to Storybook (the component-library surface).
 - New components, token changes, or component API changes.
 - Automatic baseline acceptance on merge; baseline updates remain a reviewed, explicit commit.
+- `vitest-axe` wiring — scoped separately in `DSV2-014` so each verification layer lands and is reviewed independently.
 
 ## Acceptance criteria
 
