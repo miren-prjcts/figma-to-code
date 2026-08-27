@@ -1,6 +1,7 @@
 import * as React from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
 import { describe, expect, it, vi } from "vitest";
 import { Modal, type ModalCloseReason } from "./modal";
 
@@ -214,5 +215,21 @@ describe("Modal", () => {
 
     await user.click(screen.getByRole("button", { name: "Continue" }));
     expect(onAction).toHaveBeenCalledOnce();
+  });
+
+  it("has no axe violations", async () => {
+    // Modal renders through a portal into `document.body`, so `baseElement` (not `container`)
+    // must be scanned — see jest-axe's React Portals guidance.
+    const { baseElement } = render(
+      <Modal
+        open
+        title="Confirm changes"
+        description="Review these changes before saving."
+        primaryAction={primaryAction}
+        onCloseRequest={vi.fn()}
+      />,
+    );
+
+    expect(await axe(baseElement)).toHaveNoViolations();
   });
 });

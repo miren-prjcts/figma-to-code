@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
 import { describe, expect, it, vi } from "vitest";
 import { StatCard } from "./card";
 
@@ -39,5 +40,17 @@ describe("StatCard", () => {
     const action = screen.getByRole("button", { name: "View components" });
     expect(action).toHaveClass("size-[var(--size-target-min)]", "top-1", "right-1");
     expect(action).toHaveClass("flex", "items-center", "justify-center");
+  });
+
+  it("has no axe violations", async () => {
+    const { container } = render(
+      <StatCard
+        title="Components"
+        value="12"
+        action={{ label: "View components", onClick: vi.fn() }}
+      />,
+    );
+
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

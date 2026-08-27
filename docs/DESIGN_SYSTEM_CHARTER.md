@@ -165,6 +165,27 @@ Treat this table, not memory of what a ticket intended, as the source of truth f
 built. Update it only when a change has landed and been verified, not when a ticket is merely
 approved.
 
+**Automated axe coverage (Verified, DSV2-014).** `packages/ui`'s Vitest suite runs `jest-axe`
+(chosen over the ticket-suggested `vitest-axe`, whose last release predates its own 1.0 and whose
+repo had gone over a year without a push, against `jest-axe`'s actively maintained, monthly-cadence
+releases — `jest-axe` has no Jest runtime dependency itself, only a `peerDependencies`-free matcher
+factory, so it plugs into Vitest's Jest-compatible `expect.extend` cleanly). The setup file
+(`packages/ui/src/test/setup.ts`) registers `toHaveNoViolations` globally via `expect.extend`; two
+local ambient-type files in `packages/ui/src/test/` (`jest-axe.d.ts` for the untyped package itself,
+`vitest-matchers.d.ts` for the `Assertion` interface augmentation — kept as separate files because
+mixing an ambient module declaration with a module-augmenting `import` in one file breaks the
+former) cover the types this repo needs instead of pulling in the stale, `@types/jest`-coupled
+`@types/jest-axe`. Every component test file adds at least one case in this shape:
+`const { container } = render(<Component .../>); expect(await axe(container)).toHaveNoViolations();`
+— for anything portal-rendered (e.g. Modal), pass `render()`'s `baseElement` instead of `container`,
+since the portaled content lives outside the RTL container div. This check is a floor, not a
+replacement for the keyboard-model and manual-review requirements elsewhere in this section — axe
+does not evaluate color contrast under jsdom (disabled by `jest-axe` itself) and catches only a
+subset of WCAG failures. Button's own axe assertion is intentionally deferred (see
+`docs/tickets/DSV2-014-vitest-axe-integration.md`'s handoff) to avoid a same-file conflict with the
+concurrent `DSV2-013` ticket; it should be a small follow-up once both land, reusing this exact
+pattern from `button.test.tsx`'s existing structure.
+
 ## 7 · Deliberate exclusions
 
 Explicitly out of scope for this charter's governance and for the design system in its current

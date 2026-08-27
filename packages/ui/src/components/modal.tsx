@@ -63,6 +63,42 @@ function lockBodyScroll(ownerDocument: Document): () => void {
   };
 }
 
+// ── Enter/exit transition ────────────────────────────────────────────────
+// Hand-rolled (no animation dependency, matching Modal's existing no-runtime-
+// dependency contract). The visible CSS classes below always read the real
+// tokens (var(--duration-base), var(--duration-fast), ...), so the rendered
+// timing is token-driven. EXIT_DURATION_MS is the one place JS needs a
+// number of its own: it decides how long the dialog stays mounted before
+// unmounting, and mirrors --duration-fast in
+// packages/tokens/src/tokens.css — kept in sync by convention, since a CSS
+// custom property's computed value can't be read synchronously before first
+// paint. Entering has no JS-side counterpart: it only needs "next frame"
+// (requestAnimationFrame), not a specific duration.
+type ModalPhase = "entering" | "entered" | "exiting" | null;
+
+const EXIT_DURATION_MS = 120; // mirrors --duration-fast
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function getPrefersReducedMotion(): boolean {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
+  return window.matchMedia(REDUCED_MOTION_QUERY).matches;
+}
+
+/** Tracks the `prefers-reduced-motion` media query, including live changes. */
+function usePrefersReducedMotion(): boolean {
+  const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(getPrefersReducedMotion);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
+    const handleChange = () => setPrefersReducedMotion(mediaQueryList.matches);
+    mediaQueryList.addEventListener("change", handleChange);
+    return () => mediaQueryList.removeEventListener("change", handleChange);
+  }, []);
+
+  return prefersReducedMotion;
+}
+
 export type ModalCloseReason = "backdrop" | "close-button" | "escape-key";
 export type ModalActionState = "default" | "disabled" | "loading";
 
@@ -123,7 +159,8 @@ function ModalActionButton({ action, variant }: ModalActionButtonProps): React.R
 
 /**
  * Controlled modal dialog with focus containment, focus return, Escape dismissal,
- * scroll locking, and an explicit backdrop-dismissal policy.
+ * scroll locking, an explicit backdrop-dismissal policy, and a token-driven
+ * enter/exit transition.
  */
 export function Modal({
   open,
@@ -143,6 +180,44 @@ export function Modal({
   const returnFocusRef = React.useRef<HTMLElement | null>(null);
   const onCloseRequestRef = React.useRef(onCloseRequest);
   const [portalRoot, setPortalRoot] = React.useState<HTMLElement | null>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  // Transition phase. Mounted whenever phase !== null — this stays true
+  // through "exiting" so the dialog remains in the DOM for the exit
+  // animation, instead of unmounting the instant `open` becomes false.
+  const [phase, setPhase] = React.useState<ModalPhase>(open ? "entered" : null);
+  const previousOpenRef = React.useRef(open);
+
+  // Derive the next phase synchronously during render when `open` changes
+  // (React's documented pattern for adjusting state from a prop change).
+  // This keeps `dialogRef` populated in the same commit `open` flips true,
+  // so the focus-trap effect below never runs against a null ref.
+  if (previousOpenRef.current !== open) {
+    previousOpenRef.current = open;
+    if (open) {
+      setPhase(prefersReducedMotion ? "entered" : "entering");
+    } else {
+      setPhase((current) => {
+        if (current === null) return null; // was never mounted
+        return prefersReducedMotion ? null : "exiting";
+      });
+    }
+  }
+
+  // entering -> entered, one frame later (lets the initial "entering" style
+  // paint first so the flip to "entered" is what actually animates).
+  React.useEffect(() => {
+    if (phase !== "entering") return;
+    const frame = requestAnimationFrame(() => setPhase("entered"));
+    return () => cancelAnimationFrame(frame);
+  }, [phase]);
+
+  // exiting -> unmounted, after the exit transition's duration.
+  React.useEffect(() => {
+    if (phase !== "exiting") return;
+    const timeout = setTimeout(() => setPhase(null), EXIT_DURATION_MS);
+    return () => clearTimeout(timeout);
+  }, [phase]);
 
   React.useEffect(() => {
     setPortalRoot(document.body);
@@ -227,12 +302,25 @@ export function Modal({
     };
   }, [open, portalRoot]);
 
-  if (!open || !portalRoot) return null;
+  const mounted = phase !== null;
+  if (!mounted || !portalRoot) return null;
+
+  const isEntered = phase === "entered";
+  const isExiting = phase === "exiting";
+  const transitionTimingClassName = isExiting
+    ? "duration-[var(--duration-fast)] ease-[var(--easing-accelerate)]"
+    : "duration-[var(--duration-base)] ease-[var(--easing-decelerate)]";
 
   return createPortal(
     <div
       role="presentation"
-      className="fixed inset-0 z-[var(--layer-overlay)] flex items-center justify-center bg-foreground/40 p-4"
+      data-state={phase}
+      className={cn(
+        "fixed inset-0 z-[var(--layer-overlay)] flex items-center justify-center bg-foreground/40 p-4",
+        "transition-opacity motion-reduce:transition-none",
+        transitionTimingClassName,
+        isEntered ? "opacity-100" : "opacity-0",
+      )}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && closeOnBackdropClick) {
           onCloseRequest("backdrop");
@@ -246,8 +334,12 @@ export function Modal({
         aria-labelledby={titleId}
         aria-describedby={description === undefined ? undefined : descriptionId}
         tabIndex={-1}
+        data-state={phase}
         className={cn(
-          "flex w-full max-w-[var(--size-dialog-sm)] flex-col gap-4 rounded-lg border border-border bg-card p-6 text-card-foreground shadow-soft focus:outline-none",
+          "flex w-full max-w-[var(--size-dialog-sm)] flex-col gap-4 rounded-lg border border-border bg-card p-6 text-card-foreground shadow-lg focus:outline-none",
+          "transition-[opacity,transform] motion-reduce:transition-none",
+          transitionTimingClassName,
+          isEntered ? "scale-100 opacity-100" : "scale-95 opacity-0",
           className,
         )}
       >

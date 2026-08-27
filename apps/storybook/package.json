@@ -8,7 +8,8 @@
     "build-storybook": "storybook build",
     "build": "storybook build",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test-storybook": "test-storybook"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
@@ -22,6 +23,7 @@
     "@storybook/react": "8.6.18",
     "@storybook/react-vite": "8.6.18",
     "@storybook/test": "8.6.18",
+    "@storybook/test-runner": "0.23.0",
     "@tailwindcss/vite": "^4.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

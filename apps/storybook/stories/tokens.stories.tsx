@@ -51,10 +51,37 @@ const STATUSES = ["success", "warning", "destructive", "info"] as const;
 /** Theme-invariant foundation scales — same value in Light and Dark. */
 const FOUNDATION_SCALES: Array<[string, string]> = [
   ["--opacity-disabled", "Button/Input disabled state"],
+  ["--layer-dropdown", "near-term: Dropdown Menu (BACKLOG Phase 2)"],
   ["--layer-overlay", "Modal stacking context"],
+  ["--layer-popover", "near-term: Popover (BACKLOG Phase 2)"],
+  ["--layer-tooltip", "near-term: Tooltip (BACKLOG Phase 2)"],
+  ["--layer-toast", "near-term: Toast (BACKLOG Phase 2)"],
   ["--size-icon-sm", "Modal close icon, loading spinner"],
   ["--size-icon-md", "StatCard overflow-action icon"],
   ["--size-dialog-sm", "Modal surface max width"],
+];
+
+/** Elevation scale — box-shadow tiers, distinct Light/Dark values. */
+const ELEVATION_TIERS: Array<[string, string]> = [
+  ["--effect-shadow-sm", "near-term: Tooltip, Popover"],
+  ["--effect-shadow-md", "near-term: Dropdown Menu, Toast"],
+  ["--effect-shadow-lg", "Modal surface"],
+];
+
+/** Motion — duration paired with the easing it is used with, per consumer transition. */
+const MOTION_PAIRS: Array<{ duration: string; easing: string; label: string; consumer: string }> = [
+  {
+    duration: "--duration-base",
+    easing: "--easing-decelerate",
+    label: "Enter (settles in)",
+    consumer: "Modal enter transition",
+  },
+  {
+    duration: "--duration-fast",
+    easing: "--easing-accelerate",
+    label: "Exit (speeds away)",
+    consumer: "Modal exit transition",
+  },
 ];
 const STATUS_LABEL: Record<(typeof STATUSES)[number], string> = {
   success: "In stock",
@@ -112,6 +139,115 @@ function Swatch({ name, hex }: { name: string; hex?: string }) {
 
 function Grid({ children }: { children: React.ReactNode }) {
   return <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>{children}</div>;
+}
+
+/** Elevation swatch: the box reads var(--name) as its box-shadow. */
+function ElevationSwatch({ name, consumer }: { name: string; consumer: string }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+      <div
+        style={{
+          width: 96,
+          height: 56,
+          background: "var(--card)",
+          borderRadius: "var(--radius-surface)",
+          boxShadow: `var(${name})`,
+        }}
+      />
+      <code
+        style={{ font: "400 12px/16px var(--font-mono, monospace)", color: "var(--foreground)" }}
+      >
+        {name}
+      </code>
+      <span
+        style={{
+          font: "400 11px/14px var(--font-sans, sans-serif)",
+          color: "var(--muted-foreground)",
+          textAlign: "center",
+        }}
+      >
+        {consumer}
+      </span>
+    </div>
+  );
+}
+
+/**
+ * Motion swatch — hover to see the real Modal timing: the dot enters with
+ * --duration-base/--easing-decelerate, and exits with
+ * --duration-fast/--easing-accelerate, exactly like Modal's backdrop/surface.
+ */
+function MotionSwatch({
+  duration,
+  easing,
+  label,
+  consumer,
+}: {
+  duration: string;
+  easing: string;
+  label: string;
+  consumer: string;
+}) {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, width: 200 }}>
+      <button
+        type="button"
+        onMouseEnter={() => setActive(true)}
+        onMouseLeave={() => setActive(false)}
+        onFocus={() => setActive(true)}
+        onBlur={() => setActive(false)}
+        aria-label={`${label} — hover to preview`}
+        style={{
+          height: 56,
+          borderRadius: 8,
+          border: "1px solid var(--border)",
+          background: "var(--muted)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "default",
+        }}
+      >
+        <div
+          className="motion-reduce:transition-none"
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: 9999,
+            background: "var(--primary)",
+            opacity: active ? 1 : 0,
+            transform: active ? "scale(1)" : "scale(0.5)",
+            transition: `opacity var(${duration}) var(${easing}), transform var(${duration}) var(${easing})`,
+          }}
+        />
+      </button>
+      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <span
+          style={{ font: "500 12px/16px var(--font-sans, sans-serif)", color: "var(--foreground)" }}
+        >
+          {label}
+        </span>
+        <code
+          style={{
+            font: "400 11px/14px var(--font-mono, monospace)",
+            color: "var(--muted-foreground)",
+          }}
+        >
+          {duration} · {easing}
+        </code>
+        <span
+          style={{
+            font: "400 11px/14px var(--font-sans, sans-serif)",
+            color: "var(--muted-foreground)",
+          }}
+        >
+          {consumer}
+        </span>
+      </div>
+    </div>
+  );
 }
 
 const meta: Meta = {
@@ -221,25 +357,28 @@ export const Overview: Story = {
 
       <section>
         <SectionTitle>Elevation (light / dark)</SectionTitle>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
-            style={{
-              width: 96,
-              height: 56,
-              background: "var(--card)",
-              borderRadius: "var(--radius-surface)",
-              boxShadow: "var(--effect-shadow-soft)",
-            }}
-          />
-          <code
-            style={{
-              font: "400 12px/16px var(--font-mono, monospace)",
-              color: "var(--muted-foreground)",
-            }}
-          >
-            --effect-shadow-soft (Tailwind: shadow-soft)
-          </code>
-        </div>
+        <p style={{ color: "var(--muted-foreground)", margin: "0 0 12px", maxWidth: 560 }}>
+          Replaces the retired single-tier <code>--effect-shadow-soft</code>. Tailwind:{" "}
+          <code>shadow-sm</code> / <code>shadow-md</code> / <code>shadow-lg</code>.
+        </p>
+        <Grid>
+          {ELEVATION_TIERS.map(([name, consumer]) => (
+            <ElevationSwatch key={name} name={name} consumer={consumer} />
+          ))}
+        </Grid>
+      </section>
+
+      <section>
+        <SectionTitle>Motion (theme-invariant)</SectionTitle>
+        <p style={{ color: "var(--muted-foreground)", margin: "0 0 12px", maxWidth: 560 }}>
+          Hover or focus a swatch to preview Modal&apos;s actual enter/exit timing. Both collapse to
+          instant under <code>prefers-reduced-motion: reduce</code>.
+        </p>
+        <Grid>
+          {MOTION_PAIRS.map((pair) => (
+            <MotionSwatch key={pair.duration + pair.easing} {...pair} />
+          ))}
+        </Grid>
       </section>
 
       <section>

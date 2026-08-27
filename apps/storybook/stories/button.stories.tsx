@@ -7,8 +7,8 @@ const meta: Meta<typeof Button> = {
   component: Button,
   args: { children: "Button" },
   argTypes: {
-    variant: { control: "inline-radio", options: ["solid", "outline", "ghost"] },
-    size: { control: "inline-radio", options: ["sm", "md"] },
+    variant: { control: "inline-radio", options: ["solid", "outline", "ghost", "destructive"] },
+    size: { control: "inline-radio", options: ["sm", "md", "lg"] },
   },
 };
 export default meta;
@@ -34,6 +34,7 @@ function ArrowIcon(): React.ReactElement {
 export const Solid: Story = { args: { variant: "solid" } };
 export const Outline: Story = { args: { variant: "outline" } };
 export const Ghost: Story = { args: { variant: "ghost" } };
+export const Destructive: Story = { args: { variant: "destructive" } };
 
 export const Variants: Story = {
   render: () => (
@@ -41,6 +42,7 @@ export const Variants: Story = {
       <Button variant="solid">Solid</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="ghost">Ghost</Button>
+      <Button variant="destructive">Destructive</Button>
     </div>
   ),
 };
@@ -50,6 +52,7 @@ export const Sizes: Story = {
     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
       <Button size="sm">Small</Button>
       <Button size="md">Medium</Button>
+      <Button size="lg">Large</Button>
     </div>
   ),
 };
@@ -73,14 +76,22 @@ const STATES: Array<{ label: string; props: Partial<React.ComponentProps<typeof 
   { label: "Disabled", props: { disabled: true } },
   { label: "Loading", props: { loading: true } },
 ];
-const VARIANTS = ["solid", "outline", "ghost"] as const;
+const VARIANTS = ["solid", "outline", "ghost", "destructive"] as const;
 
 function getForcedStateClass(
   state: string,
   variant: (typeof VARIANTS)[number],
 ): string | undefined {
-  if (state === "Hover") return variant === "solid" ? "bg-primary-hover" : "bg-muted";
-  if (state === "Pressed") return variant === "solid" ? "bg-primary-pressed" : "bg-secondary";
+  if (state === "Hover") {
+    if (variant === "solid") return "bg-primary-hover";
+    if (variant === "destructive") return "bg-destructive-hover";
+    return "bg-muted";
+  }
+  if (state === "Pressed") {
+    if (variant === "solid") return "bg-primary-pressed";
+    if (variant === "destructive") return "bg-destructive-pressed";
+    return "bg-secondary";
+  }
   if (state === "Focus visible") {
     return "ring-2 ring-ring ring-offset-2 ring-offset-background";
   }

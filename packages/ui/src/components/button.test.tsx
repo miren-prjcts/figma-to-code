@@ -9,6 +9,7 @@ describe("Button", () => {
     ["solid", ["bg-primary", "text-primary-foreground"]],
     ["outline", ["border", "border-input", "bg-background"]],
     ["ghost", ["bg-transparent", "text-foreground"]],
+    ["destructive", ["bg-destructive", "text-destructive-solid-foreground"]],
   ] as const)("renders the %s variant", (variant, classes) => {
     render(<Button variant={variant}>Action</Button>);
 
@@ -16,9 +17,19 @@ describe("Button", () => {
     expect(button).toHaveClass(...classes);
   });
 
+  it("includes hover and pressed interaction styles for the destructive variant", () => {
+    render(<Button variant="destructive">Action</Button>);
+
+    expect(screen.getByRole("button", { name: "Action" })).toHaveClass(
+      "hover:bg-destructive-hover",
+      "active:bg-destructive-pressed",
+    );
+  });
+
   it.each([
     ["sm", "h-[var(--size-control-sm)]"],
     ["md", "h-[var(--size-control-md)]"],
+    ["lg", "h-[var(--size-control-lg)]"],
   ] as const)("renders the %s size", (size, expectedClass) => {
     render(<Button size={size}>Action</Button>);
 
@@ -76,7 +87,7 @@ describe("Button", () => {
     );
   });
 
-  it("prevents activation while loading and retains the accessible name", async () => {
+  it("prevents activation while loading, shows a leading spinner and 'Loading…', and retains the accessible name", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
 
@@ -90,11 +101,11 @@ describe("Button", () => {
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute("aria-busy", "true");
     expect(button).toHaveAttribute("data-loading", "true");
-    expect(button.querySelector('[data-slot="button-content"]')).toHaveClass("opacity-0");
-    expect(button.querySelector('[data-slot="button-spinner"]')).toHaveAttribute(
-      "aria-hidden",
-      "true",
-    );
+    expect(button.querySelector('[data-slot="button-content"]')).toHaveClass("sr-only");
+
+    const loadingContent = button.querySelector('[data-slot="button-loading-content"]');
+    expect(loadingContent).toHaveAttribute("aria-hidden", "true");
+    expect(loadingContent).toHaveTextContent("Loading…");
     expect(button.querySelector('[data-slot="button-spinner"]')).toHaveClass(
       "animate-spin",
       "motion-reduce:animate-none",

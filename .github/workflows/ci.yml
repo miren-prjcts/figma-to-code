@@ -25,3 +25,35 @@ jobs:
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+
+  visual-regression:
+    # Runs on macOS, not the `checks` job's ubuntu-latest: the committed Storybook screenshot
+    # baselines (tests/visual/__screenshots__) were generated on macOS, and Playwright's
+    # toHaveScreenshot() tags snapshots by platform (font hinting/anti-aliasing genuinely differs
+    # between macOS and Linux, so a Linux runner would fail every story on first run, not just on
+    # real regressions). Free on GitHub Actions either way since this repo is public — the choice
+    # here is about matching the baseline's platform, not cost. See docs/VISUAL_REGRESSION.md.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install chromium
+      - run: pnpm --filter @repo/storybook build-storybook
+      - name: Visual regression (Storybook)
+        run: pnpm test:visual
+      - name: Upload visual diff artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-diffs
+          path: |
+            test-results/
+            playwright-report-visual/
+          retention-days: 14

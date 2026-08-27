@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/utils";
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-[color,background-color,border-color,box-shadow,opacity] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-[var(--opacity-disabled)]",
+  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-[color,background-color,border-color,box-shadow,opacity] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-[var(--opacity-disabled)]",
   {
     variants: {
       variant: {
@@ -12,10 +12,13 @@ const buttonVariants = cva(
         outline:
           "border border-input bg-background text-foreground hover:bg-muted active:bg-secondary",
         ghost: "bg-transparent text-foreground hover:bg-muted active:bg-secondary",
+        destructive:
+          "bg-destructive text-destructive-solid-foreground hover:bg-destructive-hover active:bg-destructive-pressed",
       },
       size: {
         sm: "h-[var(--size-control-sm)] px-3",
         md: "h-[var(--size-control-md)] px-4",
+        lg: "h-[var(--size-control-lg)] px-6",
       },
     },
     defaultVariants: { variant: "solid", size: "md" },
@@ -66,7 +69,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
     >
       <span
         data-slot="button-content"
-        className={cn("inline-flex items-center justify-center gap-2", loading && "opacity-0")}
+        className={cn("inline-flex items-center justify-center gap-2", loading && "sr-only")}
       >
         {leadingIcon ? (
           <span data-slot="button-leading-icon" className="flex shrink-0" aria-hidden="true">
@@ -82,10 +85,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
       </span>
       {loading ? (
         <span
-          data-slot="button-spinner"
-          className="absolute size-4 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none"
+          data-slot="button-loading-content"
+          className="inline-flex items-center gap-2"
           aria-hidden="true"
-        />
+        >
+          <span
+            data-slot="button-spinner"
+            className="size-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none"
+          />
+          <span data-slot="button-loading-label">Loading…</span>
+        </span>
       ) : null}
     </button>
   );

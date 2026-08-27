@@ -90,3 +90,34 @@ export const ActionStates: Story = {
     },
   },
 };
+
+function ExitTransitionExample(): React.ReactElement {
+  const [open, setOpen] = React.useState(true);
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-6">
+      <Button onClick={() => setOpen(true)}>Reopen modal</Button>
+      <Modal
+        open={open}
+        title="Discard draft?"
+        description="Your changes have not been saved."
+        primaryAction={{ label: "Discard", onAction: () => setOpen(false) }}
+        secondaryAction={{ label: "Keep editing", onAction: () => setOpen(false) }}
+        onCloseRequest={() => setOpen(false)}
+        closeOnBackdropClick
+      />
+    </div>
+  );
+}
+
+export const ExitTransition: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Starts open — dismiss it (Escape, backdrop, close button, or either action) to see the backdrop-opacity + dialog-scale/opacity exit transition (`--duration-fast` / `--easing-accelerate`), then reopen to see the entrance (`--duration-base` / `--easing-decelerate`). Both collapse to instant under `prefers-reduced-motion: reduce`.",
+      },
+    },
+  },
+  render: () => <ExitTransitionExample />,
+};

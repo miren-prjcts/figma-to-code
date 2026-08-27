@@ -54,6 +54,7 @@
 
   --size-control-sm: 2rem;
   --size-control-md: 2.25rem;
+  --size-control-lg: 2.5rem;
   --radius-control: 0.75rem;
   --radius-surface: 0.75rem;
 
@@ -81,7 +82,9 @@
   --amber-950: #2a1d05;
   --red-50: #fef2f2;
   --red-400: #f87171;
-  --red-700: #b91c1c;
+  --red-600: #dc2626; /* Button destructive (solid) base, dark theme */
+  --red-700: #b91c1c; /* Button destructive (solid) base, light theme */
+  --red-800: #991b1b; /* Button destructive (solid) hover/pressed steps */
   --red-950: #2d1314;
   --blue-50: #eff6ff;
   --blue-400: #60a5fa;
@@ -107,12 +110,42 @@
   --secondary-foreground: var(--gray-900);
 
   --radius: var(--radius-control); /* legacy alias — use named radius tokens above */
-  --effect-shadow-soft: 0 8px 24px -4px rgb(0 0 0 / 0.12); /* soft surface shadow */
+
+  /* ── Elevation scale (LIGHT) ─────────────────────────────────────────────
+     --effect-shadow-soft (single tier) is retired in favor of this named
+     sm/md/lg scale (DSV2-008) — see the .dark block below for the Dark
+     values. sm/md are near-term roles (no present consumer yet); lg is the
+     present consumer (Modal surface), carrying forward the exact value that
+     --effect-shadow-soft used to hold — renamed, not restyled.
+       sm — near-term consumer: Tooltip, Popover (BACKLOG Phase 2 overlays)
+       md — near-term consumer: Dropdown Menu, Toast (BACKLOG Phase 2 overlays)
+       lg — present consumer: Modal surface */
+  --effect-shadow-sm: 0 2px 8px -2px rgb(0 0 0 / 0.08);
+  --effect-shadow-md: 0 4px 16px -4px rgb(0 0 0 / 0.1);
+  --effect-shadow-lg: 0 8px 24px -4px rgb(0 0 0 / 0.12);
+
+  /* ── Motion (theme-invariant) ─────────────────────────────────────────────
+     Minimal duration/easing set with a real consumer today — Modal's enter/
+     exit transition (DSV2-008). Enter decelerates in (settles into place);
+     exit accelerates away (reads as snappier on dismissal) — that pairing is
+     why enter and exit each combine a distinct duration with a distinct
+     easing rather than sharing one of either. No --duration-slow or
+     --easing-standard: neither has a named consumer yet, per Charter
+     §3.3/§5 — do not add one speculatively. */
+  --duration-fast: 120ms; /* Modal exit transition */
+  --duration-base: 200ms; /* Modal enter transition */
+  --easing-decelerate: cubic-bezier(0, 0, 0.2, 1); /* Modal enter transition */
+  --easing-accelerate: cubic-bezier(0.4, 0, 1, 1); /* Modal exit transition */
 
   /* ── Interaction/foundation scales (theme-invariant) ─────────────────────
-     Only roles with a present component consumer, per DSV2-001 scope. */
+     Only roles with a present component consumer, or an explicitly named
+     near-term one from BACKLOG.md's Phase 2 scope, per DSV2-001/DSV2-008. */
   --opacity-disabled: 0.5; /* Button, Input disabled state */
+  --layer-dropdown: 40; /* near-term consumer: Dropdown Menu (BACKLOG Phase 2) */
   --layer-overlay: 50; /* Modal stacking context */
+  --layer-popover: 60; /* near-term consumer: Popover (BACKLOG Phase 2) */
+  --layer-tooltip: 70; /* near-term consumer: Tooltip (BACKLOG Phase 2) */
+  --layer-toast: 80; /* near-term consumer: Toast (BACKLOG Phase 2) */
   --size-icon-sm: 1rem; /* Modal close icon, Modal loading spinner */
   --size-icon-md: 1.25rem; /* StatCard overflow-action icon */
   --size-target-min: 2.75rem; /* Minimum interactive target — near-term consumer: DSV2-002 StatCard action */
@@ -132,6 +165,19 @@
      --destructive-foreground, a text role, as a stroke role), LIGHT ──────── */
   --invalid-border: var(--red-700);
   --invalid-ring: var(--red-700);
+
+  /* ── Destructive · solid-fill state-role set (Button's `destructive` variant), LIGHT ────
+     Distinct from --destructive-surface/--destructive-foreground above: those are the SOFT
+     tint pair (light tint bg + saturated text) consumed by Badge. A solid destructive Button
+     fill needs its own dark-enough-for-white-text roles — reusing the soft pair here would put
+     red-50 as a button fill (fails contrast against white text) or red-700 as text on a red-700
+     fill (invisible). Contrast checked against --destructive-solid-foreground (near-white):
+     --destructive (red-700) ≈ 6.2:1, --destructive-hover (red-800) ≈ 8.0:1,
+     --destructive-pressed (red-950) ≈ 16.6:1 — all pass WCAG AA (≥4.5:1). */
+  --destructive: var(--red-700);
+  --destructive-hover: var(--red-800);
+  --destructive-pressed: var(--red-950);
+  --destructive-solid-foreground: var(--gray-50); /* text on the solid destructive fill */
 }
 
 .dark {
@@ -154,7 +200,10 @@
   --secondary: var(--gray-800);
   --secondary-foreground: var(--gray-50);
 
-  --effect-shadow-soft: 0 8px 28px -4px rgb(0 0 0 / 0.5); /* deeper shadow in dark mode */
+  /* Elevation — deeper shadows in dark mode; same sm/md/lg roles as LIGHT. */
+  --effect-shadow-sm: 0 2px 10px -2px rgb(0 0 0 / 0.35);
+  --effect-shadow-md: 0 4px 18px -4px rgb(0 0 0 / 0.42);
+  --effect-shadow-lg: 0 8px 28px -4px rgb(0 0 0 / 0.5);
 
   /* ── Statuses · soft, DARK (dark tint + light text) ─────────────────────── */
   --success-surface: var(--green-950);
@@ -168,4 +217,14 @@
 
   --invalid-border: var(--red-400);
   --invalid-ring: var(--red-400);
+
+  /* ── Destructive · solid-fill state-role set, DARK ───────────────────────
+     One step lighter per role than LIGHT (red-600/700/800 vs red-700/800/950) so the fill
+     stays visible against the dark page background (red-600 vs --background ≈ 4.1:1, clears
+     the 3:1 UI-component boundary) while --destructive-solid-foreground (gray-50, constant —
+     see LIGHT block) stays ≥4.5:1 against every step: red-600 ≈ 4.6:1, red-700 ≈ 6.2:1,
+     red-800 ≈ 8.0:1. */
+  --destructive: var(--red-600);
+  --destructive-hover: var(--red-700);
+  --destructive-pressed: var(--red-800);
 }

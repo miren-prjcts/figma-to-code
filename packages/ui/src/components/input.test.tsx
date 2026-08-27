@@ -1,6 +1,7 @@
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { axe } from "jest-axe";
 import { describe, expect, it } from "vitest";
 import { Input } from "./input";
 
@@ -91,5 +92,11 @@ describe("Input", () => {
     const input = screen.getByRole("textbox", { name: "Project" });
     expect(input).toHaveClass("focus-visible:ring-2", "focus-visible:ring-ring");
     expect(ref.current).toBe(input);
+  });
+
+  it("has no axe violations", async () => {
+    const { container } = render(<Input aria-label="Project" placeholder="Enter a project name" />);
+
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

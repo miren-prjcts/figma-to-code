@@ -10,7 +10,8 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   trailingAdornment?: React.ReactNode;
 }
 
-function isAriaInvalid(value: React.AriaAttributes["aria-invalid"]): boolean {
+/** Shared `aria-invalid` truthiness check — any FormField-wired control reuses this convention. */
+export function isAriaInvalid(value: React.AriaAttributes["aria-invalid"]): boolean {
   return value !== undefined && value !== false && value !== "false";
 }
 

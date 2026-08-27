@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
 import { describe, expect, it } from "vitest";
 import { Badge } from "./badge";
 
@@ -14,5 +15,11 @@ describe("Badge", () => {
     const badge = screen.getByText("Status");
     expect(badge).toHaveClass(surfaceClass, foregroundClass);
     expect(badge).not.toHaveAttribute("tabindex");
+  });
+
+  it("has no axe violations", async () => {
+    const { container } = render(<Badge tone="info">Status</Badge>);
+
+    expect(await axe(container)).toHaveNoViolations();
   });
 });
